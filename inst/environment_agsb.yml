@@ -8,7 +8,8 @@ dependencies:
   - pandas
   - tqdm
   - matplotlib
+  - requests
+  - requests-html
   - pip
   - pip:
       - selenium
-      - requests_html
