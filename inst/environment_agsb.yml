@@ -11,3 +11,4 @@ dependencies:
   - pip
   - pip:
       - selenium
+      - requests_html

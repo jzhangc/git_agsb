@@ -5,6 +5,7 @@ test
 .DS_Store
 .vscode
 log
+config.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
