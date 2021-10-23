@@ -24,6 +24,8 @@ VERSION = '0.0.1'
 TGTURL = config.TGTURL
 
 
+# ------ variables ------
+
 # ------ functions --------
 def main(*args, **kwargs):
     return None
@@ -40,4 +42,11 @@ if __name__ == '__main__':
 
 
 # ------ test realm ------
-print(config.NAME)
+driver = webdriver.Chrome('./driver/chromedriver')
+driver.get('http://www.google.ca/')
+time.sleep(5)
+search_box = driver.find_element_by_name('q')
+search_box.send_keys('ChromeDriver')
+search_box.submit()
+time.sleep(5)  # Let the user actually see something!
+driver.quit()
