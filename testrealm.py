@@ -5,7 +5,9 @@ Waterbox
 [ ] Logging function
 [ ] Multiple browser support
 [ ] Multiple supplier support (walmart, bestbuy, microsoft)
-[ ] Send me a text message when successful
+[ ] Send me an email when successful
+[ ] Add headless mode in __name__ == '__main__' block
+[x] Add headless mode in __name__ == '__main__' block (arg.add, --headless)
 
 Ref links:
 http://www.michaelfxu.com/tools%20and%20infrastructures/building-a-sniping-bot/
@@ -204,6 +206,7 @@ driver.quit()
 
 
 def tstBuyBestbuy(url, xpath, driver):
+
     print(f'Accessing url: {url}...', end='')
     try:
         driver.get(url)
@@ -253,7 +256,36 @@ d.refresh()
 d.quit()
 
 d.quit()
-d = uc.Chrome()
+
+
+d_options = uc.ChromeOptions()
+d_options.user_data_dir = './temp/uc_profile'
+d_options.headless = False
+d_options.add_argument('--no-default-browser-check')
+
+d = uc.Chrome(options=d_options)
+d.get(product_link)
+d.save_screenshot('./temp/sc.png')
 tstBuyBestbuy(url=product_link, xpath=add_to_cart_xpath, driver=d)
+d.quit()
+
+"""
+ChromeOptions Options
+--disable-default-apps
+--disable-extensions
+--disable-infobars
+--disable-notifications
+--disable-password-generation
+--disable-password-manager-reauthentication
+--disable-password-separated-signin-flow
+--disable-popup-blocking
+--disable-save-password-bubble
+--disable-translate
+--incognito
+--mute-audio
+--no-default-browser-check
+
+"""
+
 
 d.quit()

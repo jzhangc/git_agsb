@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 '''
 Waterbox
 [ ] Construct a functional AGSB
@@ -6,7 +7,7 @@ Waterbox
 [ ] Multiple browser support
 [ ] Multiple supplier support (walmart, bestbuy, microsoft)
 [ ] Send me a text message when successful
-
+[x] Add headless mode in __name__ == '__main__' block (arg.add, --headless)
 '''
 
 # ------ libraries ------
@@ -20,34 +21,6 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 
 import config
-
-# ------ G variables ------
-VERSION = '0.0.1'
-SUPPLIER = 'microsoft'
-PRODUCT = 'xbox'
-XBOX_LINK = ''
-PS5_LINK = ''
-
-
-# ------ variables ------
-if SUPPLIER == 'microsoft':
-    if PRODUCT == 'xbox':
-        product_link = "https://www.xbox.com/en-ca/configure/8WJ714N3RBTL?ranMID=36509&ranEAID=AKGBlS8SPlM&ranSiteID=AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ&epi=AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ&irgwc=1&OCID=AID2200057_aff_7814_1243925&tduid=%28ir__lkprzt0gd0kf6j3xn91u1x99af2xrfsfusvurmhu00%29%287814%29%281243925%29%28AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ%29%28%29&irclickid=_lkprzt0gd0kf6j3xn91u1x99af2xrfsfusvurmhu00"
-    else:
-        product_link = None
-elif SUPPLIER == 'bestbuy':
-    if PRODUCT == 'xbox':
-        product_link = 'https://www.bestbuy.ca/en-ca/product/14964951'
-    elif PRODUCT == 'PS5':
-        product_link = ''
-elif SUPPLIER == 'walmart':
-    if PRODUCT == 'xbox':
-        product_link = 'https://www.walmart.ca/en/ip/xbox-series-x/6000201786332?cmpid=AF_CA_1709054_1&utm_source=rakuten&utm_medium=affiliate&utm_campaign=always_on&utm_content=10&utm_id=AF_CA_1709054_1&siteID=AKGBlS8SPlM-Jaq2E6vIoIaPd.AS3dXYAg&wmlspartner=AKGBlS8SPlM'
-    elif PRODUCT == 'PS5':
-        product_link = ''
-
-r = HTMLSession()
-r = r.get(product_link)
 
 
 # ------ classes ------
@@ -163,12 +136,53 @@ def main():
     return None
 
 
+# ------ G variables ------
+__VERSION__ = '0.0.1'
+AUTHOR = 'Jing Zhang, PhD'
+DESCRIPTION = """
+{}--------------------------------- Description -------------------------------------------
+A Good Shopping Bot
+-----------------------------------------------------------------------------------------{}
+""".format(colr.YELLOW, colr.ENDC)
+
+SUPPLIER = 'microsoft'
+PRODUCT = 'xbox'
+XBOX_LINK = ''
+PS5_LINK = ''
+
+
+# ------ variables ------
+if SUPPLIER == 'microsoft':
+    if PRODUCT == 'xbox':
+        product_link = "https://www.xbox.com/en-ca/configure/8WJ714N3RBTL?ranMID=36509&ranEAID=AKGBlS8SPlM&ranSiteID=AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ&epi=AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ&irgwc=1&OCID=AID2200057_aff_7814_1243925&tduid=%28ir__lkprzt0gd0kf6j3xn91u1x99af2xrfsfusvurmhu00%29%287814%29%281243925%29%28AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ%29%28%29&irclickid=_lkprzt0gd0kf6j3xn91u1x99af2xrfsfusvurmhu00"
+    else:
+        product_link = None
+elif SUPPLIER == 'bestbuy':
+    if PRODUCT == 'xbox':
+        product_link = 'https://www.bestbuy.ca/en-ca/product/14964951'
+    elif PRODUCT == 'PS5':
+        product_link = ''
+elif SUPPLIER == 'walmart':
+    if PRODUCT == 'xbox':
+        product_link = 'https://www.walmart.ca/en/ip/xbox-series-x/6000201786332?cmpid=AF_CA_1709054_1&utm_source=rakuten&utm_medium=affiliate&utm_campaign=always_on&utm_content=10&utm_id=AF_CA_1709054_1&siteID=AKGBlS8SPlM-Jaq2E6vIoIaPd.AS3dXYAg&wmlspartner=AKGBlS8SPlM'
+    elif PRODUCT == 'PS5':
+        product_link = ''
+
+
+# ------ arguments ------
+parser = AppArgParser(description=DESCRIPTION,
+                      epilog=f'Written by: {AUTHOR}. Current version: {__VERSION__}\n\r',
+                      formatter_class=argparse.RawTextHelpFormatter)
+
+parser._optionals.title = f"{colr.CYAN_B}Help options{colr.ENDC}"
+
+addBoolArg(parser=parser, name='headless', input_type='flag', default=False,
+           help='Run in headless mode. (Default: %(default)s)')
+
+args = parser.parse_args()
+
+
 # ------ main -------
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='AGSB arguments')
-    parser.add_argument('--name', required=True,
-                        help='Specify product name to find and purchase')
-    args = parser.parse_args()
-
-    d = webdriver.Chrome('./driver/chromedriver')
-    main()
+    print(args)
+    # main()
