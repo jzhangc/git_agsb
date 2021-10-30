@@ -24,7 +24,6 @@ import config
 VERSION = '0.0.1'
 SUPPLIER = 'microsoft'
 PRODUCT = 'xbox'
-
 XBOX_LINK = ''
 PS5_LINK = ''
 

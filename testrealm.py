@@ -137,17 +137,6 @@ time.sleep(5)  # Let the user actually see something!
 driver.quit()
 
 
-driver = uc.Chrome()
-product_link = 'https://www.bestbuy.ca/en-ca/product/hp-14-laptop-natural-slver-amd-athlon-silver-3050u-256gb-ssd-8gb-ram-windows-10/15371258'
-driver.get(product_link)
-tst_button = driver.find_element('xpath', '//*[@id="test"]/button')
-tst_button.is_displayed()
-driver.find_element('xpath', '//*[@id="test"]/button').click()
-driver.quit()
-
-add_to_cart_xpath = '//*[@id="test"]/button'
-
-
 def tstBuyBestbuy(url, xpath, driver):
     driver.get(url)
     add_to_cart_btn = driver.find_element('xpath', xpath)
@@ -171,6 +160,17 @@ def tstBuyBestbuy(url, xpath, driver):
             continue
 
 
+driver = uc.Chrome()
+product_link = 'https://www.bestbuy.ca/en-ca/product/hp-14-laptop-natural-slver-amd-athlon-silver-3050u-256gb-ssd-8gb-ram-windows-10/15371258'
+driver.get(product_link)
+tst_button = driver.find_element('xpath', '//*[@id="test"]/button')
+tst_button.is_displayed()
+driver.find_element('xpath', '//*[@id="test"]/button').click()
+driver.refresh()
+driver.quit()
+
+
 d = uc.Chrome()
 tstBuyBestbuy(url=product_link, driver=d)
+add_to_cart_xpath = '//*[@id="test"]/button'
 d.quit()
