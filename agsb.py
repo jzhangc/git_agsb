@@ -83,7 +83,7 @@ class AppArgParser(argparse.ArgumentParser):
 def addBoolArg(parser, name, help, input_type, default=False):
     """
     # Purpose\n
-        autmatically add a pair of mutually exclusive boolean arguments to the
+        Automatically add a pair of mutually exclusive boolean arguments to the
         argparser
     # Arguments\n
         parser: a parser object.\n

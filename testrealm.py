@@ -90,7 +90,7 @@ class AppArgParser(argparse.ArgumentParser):
 def addBoolArg(parser, name, help, input_type, default=False):
     """
     # Purpose\n
-        autmatically add a pair of mutually exclusive boolean arguments to the
+        Automatically add a pair of mutually exclusive boolean arguments to the
         argparser
     # Arguments\n
         parser: a parser object.\n
@@ -207,10 +207,9 @@ def tstBuyBestbuy(url, xpath, driver):
     print(f'Accessing url: {url}...', end='')
     try:
         driver.get(url)
-        time.sleep(2)
         print('success!\n')
     except:
-        print('failed!')
+        print('failed!\n')
         sys.exit(2)
 
     while True:
