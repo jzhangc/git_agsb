@@ -129,9 +129,6 @@ def tstBuyBestbuy(url, xpath, driver):
         print('failed!')
         sys.exit(2)
 
-    except:
-        error('')
-
     while True:
         btn_try_count = 0
         while True:
