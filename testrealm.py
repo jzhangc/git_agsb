@@ -145,14 +145,15 @@ tst_button.is_displayed()
 driver.find_element('xpath', '//*[@id="test"]/button').click()
 driver.quit()
 
+add_to_cart_xpath = '//*[@id="test"]/button'
 
-def tstBuyBestbuy(url, driver):
+
+def tstBuyBestbuy(url, xpath, driver):
     driver.get(url)
+    add_to_cart_btn = driver.find_element('xpath', xpath)
 
     while True:
-        add_to_cart_btn = driver.find_element(
-            'xpath', '//*[@id="test"]/button')
-
+        driver.refresh()
         print(f'Accessing url: {url}...', end='')
         if add_to_cart_btn.is_displayed() & add_to_cart_btn.is_enabled():
             time.sleep(2)
