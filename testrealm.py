@@ -18,12 +18,11 @@ https://medium.com/analytics-vidhya/how-to-easily-bypass-recaptchav2-with-seleni
 # ------ libraries ------
 import undetected_chromedriver.v2 as uc
 import argparse
-
-
+import sys
 import time
 
 from selenium import webdriver
-from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import Select, WebDriverWait
 from requests_html import HTMLSession, AsyncHTMLSession
 
 import config
@@ -58,7 +57,74 @@ r = HTMLSession()
 r = r.get(product_link)
 
 
+# ------ classes ------
+class colr:
+    WHITE = '\033[0;97m'
+    WHITE_B = '\033[1;97m'
+    YELLOW = '\033[0;33m'
+    YELLOW_B = '\033[1;33m'
+    RED = '\033[0;31m'
+    RED_B = '\033[1;31m'
+    BLUE = '\033[0;94m'
+    BLUE_B = '\033[1;94m'
+    CYAN = '\033[0;36m'
+    CYAN_B = '\033[1;36m'
+    ENDC = '\033[0m'  # end colour
+
+
+class AppArgParser(argparse.ArgumentParser):
+    """
+    # Purpose
+        The help page will display when (1) no argumment was provided, or (2) there is an error
+    """
+
+    def error(self, message, *lines):
+        string = "\n{}ERROR: " + message + "{}\n" + \
+            "\n".join(lines) + ("{}\n" if lines else "{}")
+        print(string.format(colr.RED_B, colr.RED, colr.ENDC))
+        self.print_help()
+        sys.exit(2)
+
+
 # ------ functions --------
+def addBoolArg(parser, name, help, input_type, default=False):
+    """
+    # Purpose\n
+        autmatically add a pair of mutually exclusive boolean arguments to the
+        argparser
+    # Arguments\n
+        parser: a parser object.\n
+        name: str. the argument name.\n
+        help: str. the help message.\n
+        input_type: str. the value type for the argument\n
+        default: the default value of the argument if not set\n
+    """
+    group = parser.add_mutually_exclusive_group(required=False)
+    group.add_argument('--' + name, dest=name,
+                       action='store_true', help=input_type + '. ' + help)
+    group.add_argument('--no-' + name, dest=name,
+                       action='store_false', help=input_type + '. ''(Not to) ' + help)
+    parser.set_defaults(**{name: default})
+
+
+def error(message, *lines):
+    """
+    stole from: https://github.com/alexjc/neural-enhance
+    """
+    string = "\n{}ERROR: " + message + "{}\n" + \
+        "\n".join(lines) + ("{}\n" if lines else "{}")
+    print(string.format(colr.RED_B, colr.RED, colr.ENDC))
+    sys.exit(2)
+
+
+def warn(message, *lines):
+    """
+    stole from: https://github.com/alexjc/neural-enhance
+    """
+    string = '\n{}WARNING: ' + message + '{}\n' + '\n'.join(lines) + '{}\n'
+    print(string.format(colr.YELLOW_B, colr.YELLOW, colr.ENDC))
+
+
 def checkOnlineBestbuy(url):
     '''check if available to order online'''
     r = HTMLSession()
@@ -138,15 +204,31 @@ driver.quit()
 
 
 def tstBuyBestbuy(url, xpath, driver):
-    driver.get(url)
-    add_to_cart_btn = driver.find_element('xpath', xpath)
+    print(f'Accessing url: {url}...', end='')
+    try:
+        driver.get(url)
+        time.sleep(2)
+        print('success!\n')
+    except:
+        print('failed!')
+        sys.exit(2)
 
     while True:
-        driver.refresh()
-        print(f'Accessing url: {url}...', end='')
+        btn_try_count = 0
+        while True:
+            try:
+                add_to_cart_btn = driver.find_element('xpath', xpath)
+                break
+            except:
+                time.sleep(2)
+                btn_try_count += 1
+                if btn_try_count > 10:
+                    error(
+                        'Maximum tries reached. No add to cart element found. Function terminated.')
+                else:
+                    continue
+
         if add_to_cart_btn.is_displayed() & add_to_cart_btn.is_enabled():
-            time.sleep(2)
-            print('success!\n')
             time.sleep(2)
             print('Adding product to cart...', end='')
             time.sleep(2)
@@ -157,20 +239,22 @@ def tstBuyBestbuy(url, xpath, driver):
         else:
             print('failed!\n')
             time.sleep(2)
+            driver.refresh()
             continue
 
 
-driver = uc.Chrome()
-product_link = 'https://www.bestbuy.ca/en-ca/product/hp-14-laptop-natural-slver-amd-athlon-silver-3050u-256gb-ssd-8gb-ram-windows-10/15371258'
-driver.get(product_link)
-tst_button = driver.find_element('xpath', '//*[@id="test"]/button')
-tst_button.is_displayed()
-driver.find_element('xpath', '//*[@id="test"]/button').click()
-driver.refresh()
-driver.quit()
-
-
 d = uc.Chrome()
-tstBuyBestbuy(url=product_link, driver=d)
+product_link = 'https://www.bestbuy.ca/en-ca/product/hp-14-laptop-natural-slver-amd-athlon-silver-3050u-256gb-ssd-8gb-ram-windows-10/15371258'
 add_to_cart_xpath = '//*[@id="test"]/button'
+d.get(product_link)
+tst_button = d.find_element('xpath', '//*[@id="test"]/button')
+tst_button.is_displayed()
+d.find_element('xpath', '//*[@id="test"]/button').click()
+d.refresh()
+d.quit()
+
+d.quit()
+d = uc.Chrome()
+tstBuyBestbuy(url=product_link, xpath=add_to_cart_xpath, driver=d)
+
 d.quit()
