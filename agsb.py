@@ -199,12 +199,15 @@ elif SUPPLIER == 'walmart':
 
 # ------ main -------
 if __name__ == '__main__':
-    print(f'head mode: {headless}')
+    print(f'headless mode: {headless}')
     d_options = uc.ChromeOptions()
     customChromeOptions(d_options, headless=headless)
     d = uc.Chrome(options=d_options)
+    d.get('https://www.bestbuy.ca/en-ca/product/14964951')
     if headless:
         d.save_screenshot('./temp/sc.png')
+    else:
+        time.sleep(3)
 
     d.quit()
 
