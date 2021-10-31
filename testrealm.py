@@ -65,6 +65,10 @@ r = r.get(product_link)
 
 
 # ------ classes ------
+class ElementNotFound(SystemExit):
+    pass
+
+
 class AddToCartFail(SystemError):
     pass
 
@@ -213,8 +217,7 @@ def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str =
                 time.sleep(2)
                 btn_try_count += 1
                 if btn_try_count+1 > 10:
-                    error(
-                        'Maximum tries reached. No "add to cart" element found. Program terminated.')
+                    raise ElementNotFound
                 else:
                     continue
 

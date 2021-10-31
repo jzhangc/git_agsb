@@ -29,6 +29,10 @@ from pathlib import Path
 
 
 # ------ classes ------
+class ElementNotFound(SystemExit):
+    pass
+
+
 class AddToCartFail(SystemError):
     pass
 
@@ -128,8 +132,7 @@ def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str =
                 time.sleep(2)
                 btn_try_count += 1
                 if btn_try_count+1 > 10:
-                    error(
-                        'Maximum tries reached. No "add to cart" element found. Program terminated.')
+                    raise ElementNotFound
                 else:
                     continue
 
@@ -254,6 +257,9 @@ if __name__ == '__main__':
     try:
         addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d,
                   ntry=ntry)
+    except ElementNotFound:
+        error(
+            'Maximum tries reached. No "add to cart" element found. Program terminated.')
     except AddToCartFail:
         error('Maximum tries reached. Add to cart failed.')
     finally:  # quit browser and clean up
