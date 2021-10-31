@@ -110,18 +110,21 @@ def customChromeOptions(options, headless=False):
 
 
 def tstBuyBestbuy(url, xpath, driver):
+    """buy funciton for Best Buy"""
     print(f'Accessing url: {url}...', end='')
-
     try:
         driver.get(url)
-        time.sleep(2)
         print('success!\n')
     except:
-        print('failed!')
+        print('failed!\n')
         sys.exit(2)
 
+    # -- add to cart --
+    add_to_cart_n = 1
     while True:
-        btn_try_count = 0
+        print('Adding product to cart...', end='')
+        # load and locate add to cart element
+        btn_try_count = 1
         while True:
             try:
                 add_to_cart_btn = driver.find_element('xpath', xpath)
@@ -131,22 +134,24 @@ def tstBuyBestbuy(url, xpath, driver):
                 btn_try_count += 1
                 if btn_try_count > 10:
                     error(
-                        'Maximum tries reached. No add to cart element found. Function terminated.')
+                        'Maximum tries reached. No "add to cart" element found. Program terminated.')
                 else:
                     continue
 
         if add_to_cart_btn.is_displayed() & add_to_cart_btn.is_enabled():
             time.sleep(2)
-            print('Adding product to cart...', end='')
-            time.sleep(2)
             add_to_cart_btn.click()
-            # driver.quit()
             print('success!')
             break
         else:
-            print('failed!\n')
-            time.sleep(2)
-            driver.refresh()
+            print('failed!')
+            add_to_cart_n += 1
+            print(f'trying again: {add_to_cart_n}/10.')
+            if add_to_cart_n > 10:
+                error('Maximum tries reached. Add to cart failed.')
+            else:
+                time.sleep(2)
+                driver.refresh()
             continue
 
 
@@ -189,6 +194,7 @@ if SUPPLIER == 'microsoft':
     else:
         product_link = None
 elif SUPPLIER == 'bestbuy':
+    add_to_cart_xpath = '//*[@id="test"]/button'
     if PRODUCT == 'xbox':
         product_link = 'https://www.bestbuy.ca/en-ca/product/14964951'
     elif PRODUCT == 'PS5':

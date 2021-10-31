@@ -184,22 +184,66 @@ def enterData(field, data, driver):
 
 
 # ------ test realm ------
-# -- requests_html --
+# -- for selenium --
+def tstBuyBestbuy(url, xpath, driver):
+    """buy funciton for Best Buy"""
+    print(f'Accessing url: {url}...', end='')
+    try:
+        driver.get(url)
+        print('success!\n')
+    except:
+        print('failed!\n')
+        sys.exit(2)
+
+    # -- add to cart --
+    add_to_cart_n = 1
+    while True:
+        print('Adding product to cart...', end='')
+        # load and locate add to cart element
+        btn_try_count = 1
+        while True:
+            try:
+                add_to_cart_btn = driver.find_element('xpath', xpath)
+                break
+            except:
+                time.sleep(2)
+                btn_try_count += 1
+                if btn_try_count > 10:
+                    error(
+                        'Maximum tries reached. No "add to cart" element found. Program terminated.')
+                else:
+                    continue
+
+        if add_to_cart_btn.is_displayed() & add_to_cart_btn.is_enabled():
+            time.sleep(2)
+            add_to_cart_btn.click()
+            print('success!')
+            break
+        else:
+            print('failed!')
+            add_to_cart_n += 1
+            print(f'trying again: {add_to_cart_n}/10.')
+            if add_to_cart_n > 10:
+                error('Maximum tries reached. Add to cart failed.')
+            else:
+                time.sleep(2)
+                driver.refresh()
+            continue
+
+
 product_link = 'https://www.bestbuy.ca/en-ca/product/hp-14-laptop-natural-slver-amd-athlon-silver-3050u-256gb-ssd-8gb-ram-windows-10/15371258'
 product_link = 'https://www.bestbuy.ca/en-ca/product/xbox-series-x-1tb-console/14964951'
-r = HTMLSession()
-r = r.get(product_link)
 
-buy_btn = r.html.find(
-    'button[class="button_E6SE9 primary_1oCqK addToCartButton_1op0t addToCartButton regular_1jnnf"]', first=True)
-buy_btn
-buy_btn is not None
+add_to_cart_xpath = '//*[@id="test"]/button'
 
-
-checkOnlineBestbuy(product_link)
+d_options = uc.ChromeOptions()
+customChromeOptions(d_options, headless=False)
+d = uc.Chrome(options=d_options)
+tstBuyBestbuy(url=product_link, xpath=add_to_cart_xpath, driver=d)
+d.quit()
 
 
-# -- for selenium --
+# -- old --
 driver = webdriver.Chrome('./driver/chromedriver')
 
 driver = uc.Chrome()
@@ -211,50 +255,11 @@ search_box.submit()
 time.sleep(5)  # Let the user actually see something!
 driver.quit()
 
+d.quit()
+Path('./temp').exists()
+Path('./temp').is_dir()
+shutil.rmtree(Path('./temp'))
 
-def tstBuyBestbuy(url, xpath, driver):
-
-    print(f'Accessing url: {url}...', end='')
-    try:
-        driver.get(url)
-        print('success!\n')
-    except:
-        print('failed!\n')
-        sys.exit(2)
-
-    while True:
-        btn_try_count = 0
-        while True:
-            try:
-                add_to_cart_btn = driver.find_element('xpath', xpath)
-                break
-            except:
-                time.sleep(2)
-                btn_try_count += 1
-                if btn_try_count > 10:
-                    error(
-                        'Maximum tries reached. No add to cart element found. Function terminated.')
-                else:
-                    continue
-
-        if add_to_cart_btn.is_displayed() & add_to_cart_btn.is_enabled():
-            time.sleep(2)
-            print('Adding product to cart...', end='')
-            time.sleep(2)
-            add_to_cart_btn.click()
-            # driver.quit()
-            print('success!')
-            break
-        else:
-            print('failed!\n')
-            time.sleep(2)
-            driver.refresh()
-            continue
-
-
-d = uc.Chrome()
-product_link = 'https://www.bestbuy.ca/en-ca/product/hp-14-laptop-natural-slver-amd-athlon-silver-3050u-256gb-ssd-8gb-ram-windows-10/15371258'
-add_to_cart_xpath = '//*[@id="test"]/button'
 d.get(product_link)
 tst_button = d.find_element('xpath', '//*[@id="test"]/button')
 tst_button.is_displayed()
@@ -262,47 +267,5 @@ d.find_element('xpath', '//*[@id="test"]/button').click()
 d.refresh()
 d.quit()
 
-d_options = uc.ChromeOptions()
-customChromeOptions(d_options, headless=False)
-d = uc.Chrome(options=d_options)
 d.get(product_link)
 d.save_screenshot('./temp/sc.png')
-tstBuyBestbuy(url=product_link, xpath=add_to_cart_xpath, driver=d)
-d.quit()
-
-"""
-import undetected_chromedriver.v2 as uc
-from pathlib import Path
-
-def stop_chrome_init_dialog(options):
-    # Create empty profile
-    Path('./temp/chrome_profile').mkdir(parents=False, exist_ok=True)
-    Path('./temp/chrome_profile/First Run').touch()
-    options.add_argument('--user-data-dir=./temp/chrome_profile/')
-
-options = uc.ChromeOptions()
-stop_chrome_init_dialog(options)
-uc.Chrome(options=options)
-
-ChromeOptions Options
---disable-default-apps
---disable-extensions
---disable-infobars
---disable-notifications
---disable-password-generation
---disable-password-manager-reauthentication
---disable-password-separated-signin-flow
---disable-popup-blocking
---disable-save-password-bubble
---disable-translate
---incognito
---mute-audio
---no-default-browser-check
-
-"""
-
-
-d.quit()
-Path('./temp').exists()
-Path('./temp').is_dir()
-shutil.rmtree(Path('./temp'))
