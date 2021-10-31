@@ -21,7 +21,7 @@ The program is based on selenium. See [here](https://pypi.org/project/selenium/)
 3. Create, setup and activate a conda environment
 
         conda env create -f ./inst/environment_agsb.yml --prefix ./conda_venv_agsb
-        conda activate ./conda_venv_tf_metal
+        conda activate ./conda_venv_agsb
 
 4. Known issues
 
