@@ -27,4 +27,4 @@ NOTE: The following contains steps to install on Intel Mac running macOS 11.
 
 4. Known issues
 
-    - Currently only being developeing for Unix-like and Linux systems.
+    - Currently only being developed for Unix-like and Linux systems.
