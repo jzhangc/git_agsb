@@ -16,7 +16,7 @@ The program is based on selenium. See [here](https://pypi.org/project/selenium/)
 
         bash Miniforge3-MacOSX-arm64.sh
 
-   NOTE 1: Although it is possible to use `conda config --add channels conda-forge`  to manually add the `forge` channel to miniconda, it is generally recommended using miniforge version of conda for both Apple and Intel chips.
+   NOTE 1: Although it is possible to use `conda config --add channels conda-forge`  to manually add the `forge` channel to miniconda, it is generally recommended using miniforge version of conda.
 
 3. Create, setup and activate a conda environment
 
