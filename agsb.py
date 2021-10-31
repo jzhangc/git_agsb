@@ -115,7 +115,7 @@ def customChromeOptions(options, headless=False):
 
 
 def addToCart(url, xpath, driver, ntry):
-    """buy funciton for Best Buy"""
+    """add to cart function"""
     print(f'Accessing url: {url}...', end='')
     try:
         driver.get(url)
