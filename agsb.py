@@ -241,24 +241,6 @@ elif supplier == 'microsoft':
         error('No playstation is sold by Microsoft.', 'Try other suppliers.')
 
 
-if supplier == 'microsoft':
-    if product == 'xbox':
-        product_link = "https://www.xbox.com/en-ca/configure/8WJ714N3RBTL?ranMID=36509&ranEAID=AKGBlS8SPlM&ranSiteID=AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ&epi=AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ&irgwc=1&OCID=AID2200057_aff_7814_1243925&tduid=%28ir__lkprzt0gd0kf6j3xn91u1x99af2xrfsfusvurmhu00%29%287814%29%281243925%29%28AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ%29%28%29&irclickid=_lkprzt0gd0kf6j3xn91u1x99af2xrfsfusvurmhu00"
-    else:
-        product_link = None
-elif supplier == 'bestbuy':
-    add_to_cart_xpath = '//*[@id="test"]/button'
-    if product == 'xbox':
-        product_link = 'https://www.bestbuy.ca/en-ca/product/14964951'
-    elif product == 'PS5':
-        product_link = ''
-elif supplier == 'walmart':
-    if product == 'xbox':
-        product_link = 'https://www.walmart.ca/en/ip/xbox-series-x/6000201786332?cmpid=AF_CA_1709054_1&utm_source=rakuten&utm_medium=affiliate&utm_campaign=always_on&utm_content=10&utm_id=AF_CA_1709054_1&siteID=AKGBlS8SPlM-Jaq2E6vIoIaPd.AS3dXYAg&wmlspartner=AKGBlS8SPlM'
-    elif product == 'PS5':
-        product_link = ''
-
-
 # ------ main -------
 if __name__ == '__main__':
     # -- launch broswer --
