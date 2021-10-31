@@ -8,6 +8,7 @@ log
 config.py
 driver/
 temp/
+.temp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -31,6 +31,7 @@ import os
 from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.webdriver.remote.errorhandler import NoSuchElementException
 from requests_html import HTMLSession, AsyncHTMLSession
 
 import config
@@ -71,6 +72,14 @@ class ElementNotFound(Exception):
 
 
 class AddToCartFail(Exception):
+    pass
+
+
+class FillInTextFail(Exception):
+    pass
+
+
+class LoginFail(Exception):
     pass
 
 
@@ -198,17 +207,18 @@ product_link = 'https://www.bestbuy.ca/en-ca/product/xbox-series-x-1tb-console/1
 add_to_cart_xpath = '//*[@id="test"]/button'
 
 
-def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str = 'Clicking button...'):
+def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str = 'Clicking button...', verbose=True):
     """"click a button"""
     click_button_n = 0
     while True:
-        print(msg, end='')
+        if verbose:
+            print(msg, end='')
         # load and locate add to cart element
         btn_try_count = 0
         while True:
             """wait the button to load"""
             try:
-                add_to_cart_btn = driver.find_element('xpath', xpath)
+                btn_element = driver.find_element('xpath', xpath)
                 break
             except:
                 time.sleep(2)
@@ -218,25 +228,29 @@ def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str =
                 else:
                     continue
 
-        # add to cart
-        if add_to_cart_btn.is_displayed() & add_to_cart_btn.is_enabled():
+        # click
+        if btn_element.is_displayed() & btn_element.is_enabled():
             time.sleep(2)
-            add_to_cart_btn.click()
-            print('success!')
+            btn_element.click()
+            if verbose:
+                print('success!')
             break
         else:
-            print('failed!')
+            if verbose:
+                print('failed!')
             click_button_n += 1
             if click_button_n+1 > ntry:
                 raise error_exception
             else:
-                print(f'Trying again: {click_button_n+1}/{ntry}.')
+                if verbose:
+                    print(f'Trying again: {click_button_n+1}/{ntry}.')
                 time.sleep(2)
                 driver.refresh()
             continue
 
 
 def addToCart(url, xpath, driver, ntry):
+    # -- access website --
     """add to cart function"""
     print(f'Accessing url: {url}...', end='')
     try:
@@ -252,11 +266,122 @@ def addToCart(url, xpath, driver, ntry):
 
 
 d_options = uc.ChromeOptions()
-customChromeOptions(d_options, headless=True)
+customChromeOptions(d_options, headless=False)
 d = uc.Chrome(options=d_options)
 addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d, ntry=5)
 d.quit()
 
+
+login_link = 'https://www.bestbuy.ca/identity/en-ca/signin?tid=ZSueQsXhRhIch0oXm4ae8rePROmryXd73oprfLuxH0DM1kOXhVQdL006UIBf2MTAhZD0pYRDab%252BqVI7LS73eRK1GmWKbakTti%252BAaJCDJzLcYcaQzkvvRuyWqLRsxMI1VHPMsYnijRzm%252Be8DjsL0ZT8tnDW%252BC%252Fh1PMKSe4y2SA93LjclYlkyibegDz4VaFFnfua%252B8sIbgZawOT%252BZ9muuG77%252BJjxAWb94FD%252BUwrVbS%252BEYvFblFh5JRIlXaNHZwspJOC4FWjxz2NxVLu7BGFx5JZyvEMDuWUF%252B%252B%252BnXF8ZzQ2yiNsaHrPC7UrqVtFDWi4l6btrYNnoHo9EKdxls5dxWHbrvwLnlY7HjnYPdpUKBReGE%252FcKkDqztH6bgYhA2zNFR98U5DnrWc1XV0VsnPSpW7yFDD1oLw20C1oZVOyM08XG%252F6Zz%252F%252B179EJ71XMNsVJc59'
+d_options = uc.ChromeOptions()
+customChromeOptions(d_options, headless=False)
+d = uc.Chrome(options=d_options)
+d.get(login_link)
+xpath_id, xpath_pw, xpath_login_btn = '//*[@id="username"]', '//*[@id="password"]', '//*[@id="signIn"]/div/button'
+login_email = 'j123@test.ca'
+login_password = '123zjin'
+el = d.find_element(by='xpath', value=xpath_id)
+
+
+xpath = xpath_id
+driver = d
+
+
+def fillTextbox(xpath, driver,
+                value, ntry: int,
+                error_exception: Exception, msg: str = 'Filling in text...', verbose=True):
+    """"click a button"""
+    fill_try_n = 0
+    while True:
+        if verbose:
+            print(msg, end='')
+        # load and locate add to cart element
+        find_textbox_n = 0
+        while True:
+            """wait the button to load"""
+            try:
+                textbox_element = driver.find_element('xpath', xpath)
+                break
+            except:
+                time.sleep(2)
+                find_textbox_n += 1
+                if find_textbox_n+1 > 10:
+                    raise ElementNotFound
+                else:
+                    continue
+
+        # fill in text
+        if textbox_element.is_displayed() & textbox_element.is_enabled():
+            time.sleep(2)
+            textbox_element.send_keys(value)
+            if verbose:
+                print('success!')
+            break
+        else:
+            print('failed!')
+            fill_try_n += 1
+            if fill_try_n+1 > ntry:
+                raise error_exception
+            else:
+                if verbose:
+                    print(f'Trying again: {fill_try_n+1}/{ntry}.')
+                time.sleep(2)
+                driver.refresh()
+            continue
+
+
+def loginBestbuy(url, driver, login_email, login_password):
+    """add to cart function"""
+    # -- variables --
+    xpath_id, xpath_pw, xpath_login_btn = '//*[@id="username"]', '//*[@id="password"]', '//*[@id="signIn"]/div/button'
+
+    # -- access website --
+    print(f'Accessing url: {url}...', end='')
+    try:
+        driver.get(url)
+        print('success!\n')
+    except:
+        print('failed!\n')
+        sys.exit(2)
+
+    # -- log in bestbuy --
+    print('Logging in...', end='')
+    fillTextbox(xpath=xpath_id, driver=driver, value=login_email, ntry=5, error_exception=FillInTextFail,
+                msg='Entering login email...', verbose=False)  # user id
+    fillTextbox(xpath=xpath_pw, driver=driver, value=login_password, ntry=5, error_exception=FillInTextFail,
+                msg='Entering login password...', verbose=False)  # pw
+    clickButton(xpath=xpath_login_btn, driver=driver, ntry=5,
+                error_exception=AddToCartFail, msg='Logging in...', verbose=False)
+
+    try:
+        time.sleep(2)
+        login_fail = driver.find_element(
+            by='xpath', value='//*[@id="x-SignIn"]/div/div/div')
+        if login_fail.is_displayed:
+            print('failed!')
+            raise LoginFail
+    except NoSuchElementException:
+        print('success!')
+
+
+d_options = uc.ChromeOptions()
+customChromeOptions(d_options, headless=False)
+d = uc.Chrome(options=d_options)
+loginBestbuy(url=login_link, driver=d,
+             login_email='jzhangc@gmail.com', login_password='26342531')
+
+d.get(login_link)
+fillTextbox(xpath=xpath_id, driver=d, value=login_email, ntry=5, error_exception=FillInTextFail,
+            msg='Entering login email...', verbose=False)  # user id
+fillTextbox(xpath=xpath_pw, driver=d, value=login_password, ntry=5, error_exception=FillInTextFail,
+            msg='Entering login password...', verbose=False)  # pw
+clickButton(xpath=xpath_login_btn, driver=d, ntry=5,
+            error_exception=AddToCartFail, msg='Logging in...', verbose=False)
+time.sleep(3)
+login_fail = d.find_element(
+    by='xpath', value='//*[@id="x-SignIn"]/div/div/div')
+
+d.quit()
 
 # ------ old ------
 driver = webdriver.Chrome('./driver/chromedriver')
