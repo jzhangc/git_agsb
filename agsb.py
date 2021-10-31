@@ -6,6 +6,7 @@ Waterbox
     [ ] Logging function
     [ ] Multiple supplier support (walmart, bestbuy, microsoft)
     [ ] Send me an email when successful
+    [ ] Support both guest and logged in methods to purchase
     [x] Add headless mode in __name__ == '__main__' block (arg.add, --headless)
 
     Optional
@@ -164,8 +165,6 @@ A Good Shopping Bot
 
 SUPPLIER = 'microsoft'
 PRODUCT = 'xbox'
-XBOX_LINK = ''
-PS5_LINK = ''
 
 
 # ------ arguments ------
