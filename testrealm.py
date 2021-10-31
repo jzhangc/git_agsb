@@ -7,6 +7,7 @@ Waterbox
     [ ] Send me an email when successful
     [ ] Support both guest and logged in methods to purchase
     [x] Add headless mode in __name__ == '__main__' block (arg.add, --headless)
+    [ ] Handle read only directories
 
     Optional
     [ ] Given product name search for its link
