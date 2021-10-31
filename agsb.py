@@ -14,6 +14,8 @@ Waterbox
 import argparse
 import time
 import sys
+import shutil  # to delete temp folder
+import os
 
 import undetected_chromedriver.v2 as uc
 from pathlib import Path
@@ -210,5 +212,12 @@ if __name__ == '__main__':
         time.sleep(3)
 
     d.quit()
+
+    print('deleting the temp folder...', end='')
+    try:
+        shutil.rmtree('./temp/')
+        print('done!')
+    except OSError as e:
+        print("Error: %s - %s." % (e.filename, e.strerror))
 
     # main()

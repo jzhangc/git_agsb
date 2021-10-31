@@ -18,10 +18,12 @@ https://medium.com/analytics-vidhya/how-to-easily-bypass-recaptchav2-with-seleni
 '''
 
 # ------ libraries ------
+import shutil
 import undetected_chromedriver.v2 as uc
 import argparse
 import sys
 import time
+import os
 
 from pathlib import Path
 from selenium import webdriver
@@ -258,9 +260,6 @@ d.find_element('xpath', '//*[@id="test"]/button').click()
 d.refresh()
 d.quit()
 
-d.quit()
-
-
 d_options = uc.ChromeOptions()
 customChromeOptions(d_options, headless=False)
 d = uc.Chrome(options=d_options)
@@ -302,3 +301,6 @@ ChromeOptions Options
 
 
 d.quit()
+Path('./temp').exists()
+Path('./temp').is_dir()
+shutil.rmtree(Path('./temp'))
