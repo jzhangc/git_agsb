@@ -65,6 +65,10 @@ r = r.get(product_link)
 
 
 # ------ classes ------
+class AddToCartFail(SystemError):
+    pass
+
+
 class colr:
     WHITE = '\033[0;97m'
     WHITE_B = '\033[1;97m'
@@ -110,43 +114,32 @@ def customChromeOptions(options, headless=False):
         options.add_argument('--user-data-dir=./temp/chrome_profile/')
 
 
-def checkOnlineBestbuy(url):
-    '''check if available to order online'''
-    r = HTMLSession()
-    r = r.get(url)
-
-    buy_btn = r.html.find(
-        'button[class="button_E6SE9 primary_1oCqK addToCartButton_1op0t addToCartButton regular_1jnnf"]', first=True)
-
-    return (buy_btn is not None)
-
-
-def clickAddToCartButton(xpath, driver):
-    try:
-        driver.find_element_by_xpath(xpath).click()
-        pass
-    except Exception:
-        time.sleep(5)
-        driver.refresh()
-        clickAddToCartButton(xpath, driver)
+# def clickAddToCartButton(xpath, driver):
+#     try:
+#         driver.find_element_by_xpath(xpath).click()
+#         pass
+#     except Exception:
+#         time.sleep(5)
+#         driver.refresh()
+#         clickAddToCartButton(xpath, driver)
 
 
-def clickButton(xpath, driver):
-    try:
-        driver.find_element_by_xpath(xpath).click()
-        pass
-    except Exception:
-        time.sleep(1)
-        clickButton(xpath, driver)
+# def clickButton(xpath, driver):
+#     try:
+#         driver.find_element_by_xpath(xpath).click()
+#         pass
+#     except Exception:
+#         time.sleep(1)
+#         clickButton(xpath, driver)
 
 
-def enterData(field, data, driver):
-    try:
-        driver.find_element_by_xpath(field).send_keys(data)
-        pass
-    except Exception:
-        time.sleep(1)
-        enterData(field, data, driver)
+# def enterData(field, data, driver):
+#     try:
+#         driver.find_element_by_xpath(field).send_keys(data)
+#         pass
+#     except Exception:
+#         time.sleep(1)
+#         enterData(field, data, driver)
 
 
 # ------ test realm ------
@@ -191,7 +184,7 @@ def addToCart(url, xpath, driver, ntry):
             print('failed!')
             add_to_cart_n += 1
             if add_to_cart_n+1 > ntry:
-                raise SystemExit
+                raise AddToCartFail
             else:
                 print(f'Trying again: {add_to_cart_n+1}/10.')
                 time.sleep(2)

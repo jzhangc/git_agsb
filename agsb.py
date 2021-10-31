@@ -31,6 +31,10 @@ import config
 
 
 # ------ classes ------
+class AddToCartFail(SystemError):
+    pass
+
+
 class colr:
     WHITE = '\033[0;97m'
     WHITE_B = '\033[1;97m'
@@ -150,7 +154,7 @@ def addToCart(url, xpath, driver, ntry):
             print('failed!')
             add_to_cart_n += 1
             if add_to_cart_n+1 > ntry:
-                raise SystemExit
+                raise AddToCartFail
             else:
                 print(f'Trying again: {add_to_cart_n+1}/10.')
                 time.sleep(2)
@@ -267,7 +271,7 @@ if __name__ == '__main__':
     try:
         addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d,
                   ntry=ntry)
-    except SystemExit:
+    except AddToCartFail:
         error('Maximum tries reached. Add to cart failed.')
     finally:  # quit browser and clean up
         d.quit()
