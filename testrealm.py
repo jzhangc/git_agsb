@@ -23,6 +23,7 @@ import argparse
 import sys
 import time
 
+from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from requests_html import HTMLSession, AsyncHTMLSession
@@ -127,6 +128,18 @@ def warn(message, *lines):
     print(string.format(colr.YELLOW_B, colr.YELLOW, colr.ENDC))
 
 
+def customChromeOptions(options, headless=False):
+    # Create empty profile
+    Path('./temp/chrome_profile').mkdir(parents=True, exist_ok=True)
+    Path('./temp/chrome_profile/First Run').touch()
+
+    # Set options
+    if headless:
+        options.headless = True
+    else:
+        options.add_argument('--user-data-dir=./temp/chrome_profile/')
+
+
 def checkOnlineBestbuy(url):
     '''check if available to order online'''
     r = HTMLSession()
@@ -164,16 +177,6 @@ def enterData(field, data, driver):
     except Exception:
         time.sleep(1)
         enterData(field, data, driver)
-
-
-# ------ main -------
-if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser(description='AGSB arguments')
-    parser.add_argument('--name', required=True,
-                        help='Specify product name to find and purchase')
-    args = parser.parse_args()
-    main(target_product=args.name)
 
 
 # ------ test realm ------
@@ -259,10 +262,7 @@ d.quit()
 
 
 d_options = uc.ChromeOptions()
-d_options.user_data_dir = './temp/uc_profile'
-d_options.headless = False
-d_options.add_argument('--no-default-browser-check')
-
+customChromeOptions(d_options, headless=False)
 d = uc.Chrome(options=d_options)
 d.get(product_link)
 d.save_screenshot('./temp/sc.png')
@@ -270,6 +270,19 @@ tstBuyBestbuy(url=product_link, xpath=add_to_cart_xpath, driver=d)
 d.quit()
 
 """
+import undetected_chromedriver.v2 as uc
+from pathlib import Path
+
+def stop_chrome_init_dialog(options):
+    # Create empty profile
+    Path('./temp/chrome_profile').mkdir(parents=False, exist_ok=True)
+    Path('./temp/chrome_profile/First Run').touch()
+    options.add_argument('--user-data-dir=./temp/chrome_profile/')
+
+options = uc.ChromeOptions()
+stop_chrome_init_dialog(options)
+uc.Chrome(options=options)
+
 ChromeOptions Options
 --disable-default-apps
 --disable-extensions

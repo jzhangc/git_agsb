@@ -16,6 +16,7 @@ import time
 import sys
 
 import undetected_chromedriver.v2 as uc
+from pathlib import Path
 from requests_html import HTMLSession
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
@@ -91,6 +92,18 @@ def warn(message, *lines):
     print(string.format(colr.YELLOW_B, colr.YELLOW, colr.ENDC))
 
 
+def customChromeOptions(options, headless=False):
+    # Create empty profile
+    Path('./temp/chrome_profile').mkdir(parents=True, exist_ok=True)
+    Path('./temp/chrome_profile/First Run').touch()
+
+    # Set options
+    if headless:
+        options.headless = True
+    else:
+        options.add_argument('--user-data-dir=./temp/chrome_profile/')
+
+
 def tstBuyBestbuy(url, xpath, driver):
     print(f'Accessing url: {url}...', end='')
 
@@ -151,7 +164,22 @@ XBOX_LINK = ''
 PS5_LINK = ''
 
 
+# ------ arguments ------
+parser = AppArgParser(description=DESCRIPTION,
+                      epilog=f'Written by: {AUTHOR}. Current version: {__VERSION__}\n\r',
+                      formatter_class=argparse.RawTextHelpFormatter)
+
+parser._optionals.title = f"{colr.CYAN_B}Help options{colr.ENDC}"
+
+addBoolArg(parser=parser, name='headless', input_type='flag', default=False,
+           help='Run in headless mode. (Default: %(default)s)')
+
+args = parser.parse_args()
+
+
 # ------ variables ------
+headless = args.headless
+
 if SUPPLIER == 'microsoft':
     if PRODUCT == 'xbox':
         product_link = "https://www.xbox.com/en-ca/configure/8WJ714N3RBTL?ranMID=36509&ranEAID=AKGBlS8SPlM&ranSiteID=AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ&epi=AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ&irgwc=1&OCID=AID2200057_aff_7814_1243925&tduid=%28ir__lkprzt0gd0kf6j3xn91u1x99af2xrfsfusvurmhu00%29%287814%29%281243925%29%28AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ%29%28%29&irclickid=_lkprzt0gd0kf6j3xn91u1x99af2xrfsfusvurmhu00"
@@ -169,20 +197,15 @@ elif SUPPLIER == 'walmart':
         product_link = ''
 
 
-# ------ arguments ------
-parser = AppArgParser(description=DESCRIPTION,
-                      epilog=f'Written by: {AUTHOR}. Current version: {__VERSION__}\n\r',
-                      formatter_class=argparse.RawTextHelpFormatter)
-
-parser._optionals.title = f"{colr.CYAN_B}Help options{colr.ENDC}"
-
-addBoolArg(parser=parser, name='headless', input_type='flag', default=False,
-           help='Run in headless mode. (Default: %(default)s)')
-
-args = parser.parse_args()
-
-
 # ------ main -------
 if __name__ == '__main__':
-    print(args)
+    print(f'head mode: {headless}')
+    d_options = uc.ChromeOptions()
+    customChromeOptions(d_options, headless=headless)
+    d = uc.Chrome(options=d_options)
+    if headless:
+        d.save_screenshot('./temp/sc.png')
+
+    d.quit()
+
     # main()
