@@ -114,36 +114,6 @@ def customChromeOptions(options, headless=False):
         options.add_argument('--user-data-dir=./temp/chrome_profile/')
 
 
-# def clickAddToCartButton(xpath, driver):
-#     try:
-#         driver.find_element_by_xpath(xpath).click()
-#         pass
-#     except Exception:
-#         time.sleep(5)
-#         driver.refresh()
-#         clickAddToCartButton(xpath, driver)
-
-
-# def clickButton(xpath, driver):
-#     try:
-#         driver.find_element_by_xpath(xpath).click()
-#         pass
-#     except Exception:
-#         time.sleep(1)
-#         clickButton(xpath, driver)
-
-
-# def enterData(field, data, driver):
-#     try:
-#         driver.find_element_by_xpath(field).send_keys(data)
-#         pass
-#     except Exception:
-#         time.sleep(1)
-#         enterData(field, data, driver)
-
-
-# ------ test realm ------
-# -- for selenium --
 def addToCart(url, xpath, driver, ntry):
     """add to cart function"""
     print(f'Accessing url: {url}...', end='')
@@ -191,16 +161,100 @@ def addToCart(url, xpath, driver, ntry):
                 driver.refresh()
             continue
 
+# def clickAddToCartButton(xpath, driver):
+#     try:
+#         driver.find_element_by_xpath(xpath).click()
+#         pass
+#     except Exception:
+#         time.sleep(5)
+#         driver.refresh()
+#         clickAddToCartButton(xpath, driver)
 
+
+# def clickButton(xpath, driver):
+#     try:
+#         driver.find_element_by_xpath(xpath).click()
+#         pass
+#     except Exception:
+#         time.sleep(1)
+#         clickButton(xpath, driver)
+
+
+# def enterData(field, data, driver):
+#     try:
+#         driver.find_element_by_xpath(field).send_keys(data)
+#         pass
+#     except Exception:
+#         time.sleep(1)
+#         enterData(field, data, driver)
+
+
+# ------ test realm ------
+# -- for selenium --
 product_link = 'https://www.bestbuy.ca/en-ca/product/hp-14-laptop-natural-slver-amd-athlon-silver-3050u-256gb-ssd-8gb-ram-windows-10/15371258'
 product_link = 'https://www.bestbuy.ca/en-ca/product/xbox-series-x-1tb-console/14964951'
 
 add_to_cart_xpath = '//*[@id="test"]/button'
 
+
+def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str = 'Clicking button...'):
+    """"click a button"""
+    click_button_n = 0
+    while True:
+        print(msg, end='')
+        # load and locate add to cart element
+        btn_try_count = 0
+        while True:
+            """wait the button to load"""
+            try:
+                add_to_cart_btn = driver.find_element('xpath', xpath)
+                break
+            except:
+                time.sleep(2)
+                btn_try_count += 1
+                if btn_try_count+1 > 10:
+                    error(
+                        'Maximum tries reached. No "add to cart" element found. Program terminated.')
+                else:
+                    continue
+
+        # add to cart
+        if add_to_cart_btn.is_displayed() & add_to_cart_btn.is_enabled():
+            time.sleep(2)
+            add_to_cart_btn.click()
+            print('success!')
+            break
+        else:
+            print('failed!')
+            click_button_n += 1
+            if click_button_n+1 > ntry:
+                raise error_exception
+            else:
+                print(f'Trying again: {click_button_n+1}/{ntry}.')
+                time.sleep(2)
+                driver.refresh()
+            continue
+
+
+def addToCart(url, xpath, driver, ntry):
+    """add to cart function"""
+    print(f'Accessing url: {url}...', end='')
+    try:
+        driver.get(url)
+        print('success!\n')
+    except:
+        print('failed!\n')
+        sys.exit(2)
+
+    # -- add to cart --
+    clickButton(xpath=xpath, driver=driver, ntry=ntry,
+                error_exception=AddToCartFail, msg='Adding to cart...')
+
+
 d_options = uc.ChromeOptions()
-customChromeOptions(d_options, headless=False)
+customChromeOptions(d_options, headless=True)
 d = uc.Chrome(options=d_options)
-addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d)
+addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d, ntry=5)
 d.quit()
 
 

@@ -112,20 +112,11 @@ def customChromeOptions(options, headless=False):
         options.add_argument('--user-data-dir=./temp/chrome_profile/')
 
 
-def addToCart(url, xpath, driver, ntry):
-    """add to cart function"""
-    print(f'Accessing url: {url}...', end='')
-    try:
-        driver.get(url)
-        print('success!\n')
-    except:
-        print('failed!\n')
-        sys.exit(2)
-
-    # -- add to cart --
-    add_to_cart_n = 0
+def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str = 'Clicking button...'):
+    """"click a button"""
+    click_button_n = 0
     while True:
-        print('Adding product to cart...', end='')
+        print(msg, end='')
         # load and locate add to cart element
         btn_try_count = 0
         while True:
@@ -150,18 +141,80 @@ def addToCart(url, xpath, driver, ntry):
             break
         else:
             print('failed!')
-            add_to_cart_n += 1
-            if add_to_cart_n+1 > ntry:
-                raise AddToCartFail
+            click_button_n += 1
+            if click_button_n+1 > ntry:
+                raise error_exception
             else:
-                print(f'Trying again: {add_to_cart_n+1}/{ntry}.')
+                print(f'Trying again: {click_button_n+1}/{ntry}.')
                 time.sleep(2)
                 driver.refresh()
             continue
 
 
-def main():
-    return None
+def addToCart(url, xpath, driver, ntry):
+    """add to cart function"""
+    print(f'Accessing url: {url}...', end='')
+    try:
+        driver.get(url)
+        print('success!\n')
+    except:
+        print('failed!\n')
+        sys.exit(2)
+
+    # -- add to cart --
+    clickButton(xpath=xpath, driver=driver, ntry=ntry,
+                error_exception=AddToCartFail, msg='Adding to cart...')
+
+# def addToCart(url, xpath, driver, ntry):
+#     """add to cart function"""
+#     print(f'Accessing url: {url}...', end='')
+#     try:
+#         driver.get(url)
+#         print('success!\n')
+#     except:
+#         print('failed!\n')
+#         sys.exit(2)
+
+#     # -- add to cart --
+#     add_to_cart_n = 0
+#     while True:
+#         print('Adding product to cart...', end='')
+#         # load and locate add to cart element
+#         btn_try_count = 0
+#         while True:
+#             """wait the button to load"""
+#             try:
+#                 add_to_cart_btn = driver.find_element('xpath', xpath)
+#                 break
+#             except:
+#                 time.sleep(2)
+#                 btn_try_count += 1
+#                 if btn_try_count+1 > 10:
+#                     error(
+#                         'Maximum tries reached. No "add to cart" element found. Program terminated.')
+#                 else:
+#                     continue
+
+#         # add to cart
+#         if add_to_cart_btn.is_displayed() & add_to_cart_btn.is_enabled():
+#             time.sleep(2)
+#             add_to_cart_btn.click()
+#             print('success!')
+#             break
+#         else:
+#             print('failed!')
+#             add_to_cart_n += 1
+#             if add_to_cart_n+1 > ntry:
+#                 raise AddToCartFail
+#             else:
+#                 print(f'Trying again: {add_to_cart_n+1}/{ntry}.')
+#                 time.sleep(2)
+#                 driver.refresh()
+#             continue
+
+
+# def main():
+#     return None
 
 
 # ------ G variables ------
@@ -252,7 +305,7 @@ if __name__ == '__main__':
         error('Maximum tries reached. Add to cart failed.')
     finally:  # quit browser and clean up
         d.quit()
-        print('Cleanning up...', end='')
+        print('Cleaning up...', end='')
         try:
             shutil.rmtree('./temp/')
             print('done!\n')
