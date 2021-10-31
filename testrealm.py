@@ -90,9 +90,7 @@ class colr:
 
 # ------ functions --------
 def error(message, *lines):
-    """
-    stole from: https://github.com/alexjc/neural-enhance
-    """
+    """stole from: https://github.com/alexjc/neural-enhance"""
     string = "\n{}ERROR: " + message + "{}\n" + \
         "\n".join(lines) + ("{}\n" if lines else "{}")
     print(string.format(colr.RED_B, colr.RED, colr.ENDC))
@@ -100,9 +98,7 @@ def error(message, *lines):
 
 
 def warn(message, *lines):
-    """
-    stole from: https://github.com/alexjc/neural-enhance
-    """
+    """stole from: https://github.com/alexjc/neural-enhance"""
     string = '\n{}WARNING: ' + message + '{}\n' + '\n'.join(lines) + '{}\n'
     print(string.format(colr.YELLOW_B, colr.YELLOW, colr.ENDC))
 
@@ -149,7 +145,7 @@ def addToCart(url, xpath, driver, ntry):
                 else:
                     continue
 
-        # add to cart
+        # click
         if add_to_cart_btn.is_displayed() & add_to_cart_btn.is_enabled():
             time.sleep(2)
             add_to_cart_btn.click()
