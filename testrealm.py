@@ -65,11 +65,11 @@ r = r.get(product_link)
 
 
 # ------ classes ------
-class ElementNotFound(SystemExit):
+class ElementNotFound(Exception):
     pass
 
 
-class AddToCartFail(SystemError):
+class AddToCartFail(Exception):
     pass
 
 

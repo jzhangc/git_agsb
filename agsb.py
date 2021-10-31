@@ -29,11 +29,11 @@ from pathlib import Path
 
 
 # ------ classes ------
-class ElementNotFound(SystemExit):
+class ElementNotFound(Exception):
     pass
 
 
-class AddToCartFail(SystemError):
+class AddToCartFail(Exception):
     pass
 
 
