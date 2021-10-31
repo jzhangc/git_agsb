@@ -18,16 +18,14 @@ import argparse
 import time
 import sys
 import shutil  # to delete temp folder
-import os
-from typing import final
 
 import undetected_chromedriver.v2 as uc
 from pathlib import Path
-from requests_html import HTMLSession
-from selenium import webdriver
-from selenium.webdriver.support.ui import Select
 
-import config
+# from requests_html import HTMLSession
+# from selenium import webdriver
+# from selenium.webdriver.support.ui import Select
+# import config
 
 
 # ------ classes ------
