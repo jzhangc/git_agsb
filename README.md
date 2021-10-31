@@ -1,6 +1,6 @@
 # AGSB
 
-"A good shopping bot" is purely for educational purposes. DO NOT use this to buy things online.
+"A good shopping bot" is purely for research and educational purposes. DO NOT use this to buy things online.
 
 ## Instructions (Oct.2021)
 
