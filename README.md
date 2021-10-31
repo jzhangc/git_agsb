@@ -6,8 +6,6 @@
 
 The program is based on selenium. See [here](https://pypi.org/project/selenium/) for details.
 
-NOTE: The following contains steps to install on Intel Mac running macOS 11.
-
 1. System requirement
 
     Anything Mac or Linux systems with an internet connection.
