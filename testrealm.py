@@ -1,13 +1,14 @@
 '''
 Waterbox
-[ ] Construct a functional AGSB
-[ ] Get product links given product name
-[ ] Logging function
-[ ] Multiple browser support
-[ ] Multiple supplier support (walmart, bestbuy, microsoft)
-[ ] Send me an email when successful
-[ ] Add headless mode in __name__ == '__main__' block
-[x] Add headless mode in __name__ == '__main__' block (arg.add, --headless)
+    Mandatory
+    [ ] Construct a functional AGSB
+    [ ] Logging function
+    [ ] Multiple supplier support (walmart, bestbuy, microsoft)
+    [ ] Send me an email when successful
+    [x] Add headless mode in __name__ == '__main__' block (arg.add, --headless)
+
+    Optional
+    [ ] Given product name search for its link
 
 Ref links:
 http://www.michaelfxu.com/tools%20and%20infrastructures/building-a-sniping-bot/

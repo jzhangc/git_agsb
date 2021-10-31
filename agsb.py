@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 '''
 Waterbox
-[ ] Construct a functional AGSB
-[ ] Get product links given product name
-[ ] Logging function
-[ ] Multiple browser support
-[ ] Multiple supplier support (walmart, bestbuy, microsoft)
-[ ] Send me a text message when successful
-[x] Add headless mode in __name__ == '__main__' block (arg.add, --headless)
+    Mandatory
+    [ ] Construct a functional AGSB
+    [ ] Logging function
+    [ ] Multiple supplier support (walmart, bestbuy, microsoft)
+    [ ] Send me an email when successful
+    [x] Add headless mode in __name__ == '__main__' block (arg.add, --headless)
+
+    Optional
+    [ ] Given product name search for its link
 '''
 
 # ------ libraries ------
@@ -211,6 +213,7 @@ if __name__ == '__main__':
     else:
         time.sleep(3)
 
+    # -- quit browser and clean up --
     d.quit()
 
     print('deleting the temp folder...', end='')
