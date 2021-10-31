@@ -19,6 +19,7 @@ import time
 import sys
 import shutil  # to delete temp folder
 import os
+from typing import final
 
 import undetected_chromedriver.v2 as uc
 from pathlib import Path
@@ -109,7 +110,7 @@ def customChromeOptions(options, headless=False):
         options.add_argument('--user-data-dir=./temp/chrome_profile/')
 
 
-def tstBuyBestbuy(url, xpath, driver):
+def addToCart(url, xpath, driver, ntry):
     """buy funciton for Best Buy"""
     print(f'Accessing url: {url}...', end='')
     try:
@@ -120,24 +121,26 @@ def tstBuyBestbuy(url, xpath, driver):
         sys.exit(2)
 
     # -- add to cart --
-    add_to_cart_n = 1
+    add_to_cart_n = 0
     while True:
         print('Adding product to cart...', end='')
         # load and locate add to cart element
-        btn_try_count = 1
+        btn_try_count = 0
         while True:
+            """wait the button to load"""
             try:
                 add_to_cart_btn = driver.find_element('xpath', xpath)
                 break
             except:
                 time.sleep(2)
                 btn_try_count += 1
-                if btn_try_count > 10:
+                if btn_try_count+1 > 10:
                     error(
                         'Maximum tries reached. No "add to cart" element found. Program terminated.')
                 else:
                     continue
 
+        # add to cart
         if add_to_cart_btn.is_displayed() & add_to_cart_btn.is_enabled():
             time.sleep(2)
             add_to_cart_btn.click()
@@ -146,10 +149,10 @@ def tstBuyBestbuy(url, xpath, driver):
         else:
             print('failed!')
             add_to_cart_n += 1
-            print(f'trying again: {add_to_cart_n}/10.')
-            if add_to_cart_n > 10:
-                error('Maximum tries reached. Add to cart failed.')
+            if add_to_cart_n+1 > ntry:
+                raise SystemExit
             else:
+                print(f'Trying again: {add_to_cart_n+1}/10.')
                 time.sleep(2)
                 driver.refresh()
             continue
@@ -179,6 +182,17 @@ parser = AppArgParser(description=DESCRIPTION,
 
 parser._optionals.title = f"{colr.CYAN_B}Help options{colr.ENDC}"
 
+parser.add_argument('-p', '--product', type=str,
+                    choices=['xsx', 'xss', 'ps5disc', 'ps5digital'],
+                    default='xsx',
+                    help='str. Product to buy. (Default: %(default)s)')
+parser.add_argument('-s', '--supplier', type=str,
+                    choices=['bestbuy', 'walmart', 'microsoft'],
+                    default='bestbuy',
+                    help='str. Supplier. (Default: %(default)s)')
+parser.add_argument('-t', '--tries', type=int,
+                    default=10,
+                    help='str. Maximum number of tries. (Default: %(default)s)')
 addBoolArg(parser=parser, name='headless', input_type='flag', default=False,
            help='Run in headless mode. (Default: %(default)s)')
 
@@ -187,45 +201,87 @@ args = parser.parse_args()
 
 # ------ variables ------
 headless = args.headless
+product = args.product
+supplier = args.supplier
+ntry = args.tries
 
-if SUPPLIER == 'microsoft':
-    if PRODUCT == 'xbox':
+if supplier == 'bestbuy':
+    add_to_cart_xpath = '//*[@id="test"]/button'
+    if product == 'xsx':
+        product_link = 'https://www.bestbuy.ca/en-ca/product/14964951'
+    elif product == 'xss':
+        product_link = 'https://www.bestbuy.ca/en-ca/product/xbox-series-s-512gb-console/14964950'
+    elif product == 'ps5disc':
+        product_link = 'https://www.bestbuy.ca/en-ca/product/playstation-5-console/14962185'
+    else:
+        product_link = 'https://www.bestbuy.ca/en-ca/product/playstation-5-digital-edition-console/15689335'
+elif supplier == 'walmart':
+    """to be completed"""
+    add_to_cart_xpath = '/html/body/div[1]/div/div[4]/div/div/div[1]/div[3]/div[2]/div/div[2]/div[2]/div/button[1]'
+    if product == 'xsx':
+        product_link = ''
+    elif product == 'xss':
+        product_link = 'https://www.walmart.ca/en/ip/xbox-series-s/6000201790919'
+    elif product == 'ps5disc':
+        product_link = ''
+    else:
+        product_link = ''
+elif supplier == 'microsoft':
+    """to be completed"""
+    add_to_cart_xpath = ''
+    if product == 'xsx':
+        product_link = ''
+    elif product == 'xss':
+        product_link = 'https://www.walmart.ca/en/ip/xbox-series-s/6000201790919'
+    else:
+        error('No playstation is sold by Microsoft.', 'Try other suppliers.')
+
+
+if supplier == 'microsoft':
+    if product == 'xbox':
         product_link = "https://www.xbox.com/en-ca/configure/8WJ714N3RBTL?ranMID=36509&ranEAID=AKGBlS8SPlM&ranSiteID=AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ&epi=AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ&irgwc=1&OCID=AID2200057_aff_7814_1243925&tduid=%28ir__lkprzt0gd0kf6j3xn91u1x99af2xrfsfusvurmhu00%29%287814%29%281243925%29%28AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ%29%28%29&irclickid=_lkprzt0gd0kf6j3xn91u1x99af2xrfsfusvurmhu00"
     else:
         product_link = None
-elif SUPPLIER == 'bestbuy':
+elif supplier == 'bestbuy':
     add_to_cart_xpath = '//*[@id="test"]/button'
-    if PRODUCT == 'xbox':
+    if product == 'xbox':
         product_link = 'https://www.bestbuy.ca/en-ca/product/14964951'
-    elif PRODUCT == 'PS5':
+    elif product == 'PS5':
         product_link = ''
-elif SUPPLIER == 'walmart':
-    if PRODUCT == 'xbox':
+elif supplier == 'walmart':
+    if product == 'xbox':
         product_link = 'https://www.walmart.ca/en/ip/xbox-series-x/6000201786332?cmpid=AF_CA_1709054_1&utm_source=rakuten&utm_medium=affiliate&utm_campaign=always_on&utm_content=10&utm_id=AF_CA_1709054_1&siteID=AKGBlS8SPlM-Jaq2E6vIoIaPd.AS3dXYAg&wmlspartner=AKGBlS8SPlM'
-    elif PRODUCT == 'PS5':
+    elif product == 'PS5':
         product_link = ''
 
 
 # ------ main -------
 if __name__ == '__main__':
+    # -- launch broswer --
     print(f'headless mode: {headless}')
     d_options = uc.ChromeOptions()
     customChromeOptions(d_options, headless=headless)
     d = uc.Chrome(options=d_options)
-    d.get('https://www.bestbuy.ca/en-ca/product/14964951')
-    if headless:
-        d.save_screenshot('./screenshots/sc.png')
-    else:
-        time.sleep(3)
 
-    # -- quit browser and clean up --
-    d.quit()
-
-    print('deleting the temp folder...', end='')
+    # -- purchase --
     try:
-        shutil.rmtree('./temp/')
-        print('done!')
-    except OSError as e:
-        print("Error: %s - %s." % (e.filename, e.strerror))
+        addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d,
+                  ntry=ntry)
+    except SystemExit:
+        error('Maximum tries reached. Add to cart failed.')
+    finally:  # quit browser and clean up
+        d.quit()
+        print('Cleanning up...', end='')
+        try:
+            shutil.rmtree('./temp/')
+            print('done!\n')
+        except OSError as e:
+            print("Error: %s - %s." % (e.filename, e.strerror))
 
     # main()
+
+    # d.get('https://www.bestbuy.ca/en-ca/product/14964951')
+    # if headless:
+    #     d.save_screenshot('./screenshots/sc.png')
+    # else:
+    #     time.sleep(3)

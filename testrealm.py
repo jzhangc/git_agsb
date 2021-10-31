@@ -79,41 +79,7 @@ class colr:
     ENDC = '\033[0m'  # end colour
 
 
-class AppArgParser(argparse.ArgumentParser):
-    """
-    # Purpose
-        The help page will display when (1) no argumment was provided, or (2) there is an error
-    """
-
-    def error(self, message, *lines):
-        string = "\n{}ERROR: " + message + "{}\n" + \
-            "\n".join(lines) + ("{}\n" if lines else "{}")
-        print(string.format(colr.RED_B, colr.RED, colr.ENDC))
-        self.print_help()
-        sys.exit(2)
-
-
 # ------ functions --------
-def addBoolArg(parser, name, help, input_type, default=False):
-    """
-    # Purpose\n
-        Automatically add a pair of mutually exclusive boolean arguments to the
-        argparser
-    # Arguments\n
-        parser: a parser object.\n
-        name: str. the argument name.\n
-        help: str. the help message.\n
-        input_type: str. the value type for the argument\n
-        default: the default value of the argument if not set\n
-    """
-    group = parser.add_mutually_exclusive_group(required=False)
-    group.add_argument('--' + name, dest=name,
-                       action='store_true', help=input_type + '. ' + help)
-    group.add_argument('--no-' + name, dest=name,
-                       action='store_false', help=input_type + '. ''(Not to) ' + help)
-    parser.set_defaults(**{name: default})
-
-
 def error(message, *lines):
     """
     stole from: https://github.com/alexjc/neural-enhance
@@ -185,7 +151,7 @@ def enterData(field, data, driver):
 
 # ------ test realm ------
 # -- for selenium --
-def tstBuyBestbuy(url, xpath, driver):
+def addToCart(url, xpath, driver, ntry):
     """buy funciton for Best Buy"""
     print(f'Accessing url: {url}...', end='')
     try:
@@ -196,24 +162,26 @@ def tstBuyBestbuy(url, xpath, driver):
         sys.exit(2)
 
     # -- add to cart --
-    add_to_cart_n = 1
+    add_to_cart_n = 0
     while True:
         print('Adding product to cart...', end='')
         # load and locate add to cart element
-        btn_try_count = 1
+        btn_try_count = 0
         while True:
+            """wait the button to load"""
             try:
                 add_to_cart_btn = driver.find_element('xpath', xpath)
                 break
             except:
                 time.sleep(2)
                 btn_try_count += 1
-                if btn_try_count > 10:
+                if btn_try_count+1 > 10:
                     error(
                         'Maximum tries reached. No "add to cart" element found. Program terminated.')
                 else:
                     continue
 
+        # add to cart
         if add_to_cart_btn.is_displayed() & add_to_cart_btn.is_enabled():
             time.sleep(2)
             add_to_cart_btn.click()
@@ -222,10 +190,10 @@ def tstBuyBestbuy(url, xpath, driver):
         else:
             print('failed!')
             add_to_cart_n += 1
-            print(f'trying again: {add_to_cart_n}/10.')
-            if add_to_cart_n > 10:
-                error('Maximum tries reached. Add to cart failed.')
+            if add_to_cart_n+1 > ntry:
+                raise SystemExit
             else:
+                print(f'Trying again: {add_to_cart_n+1}/10.')
                 time.sleep(2)
                 driver.refresh()
             continue
@@ -239,11 +207,11 @@ add_to_cart_xpath = '//*[@id="test"]/button'
 d_options = uc.ChromeOptions()
 customChromeOptions(d_options, headless=False)
 d = uc.Chrome(options=d_options)
-tstBuyBestbuy(url=product_link, xpath=add_to_cart_xpath, driver=d)
+addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d)
 d.quit()
 
 
-# -- old --
+# ------ old ------
 driver = webdriver.Chrome('./driver/chromedriver')
 
 driver = uc.Chrome()
