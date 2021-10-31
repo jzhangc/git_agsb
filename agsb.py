@@ -165,53 +165,6 @@ def addToCart(url, xpath, driver, ntry):
     clickButton(xpath=xpath, driver=driver, ntry=ntry,
                 error_exception=AddToCartFail, msg='Adding to cart...')
 
-# def addToCart(url, xpath, driver, ntry):
-#     """add to cart function"""
-#     print(f'Accessing url: {url}...', end='')
-#     try:
-#         driver.get(url)
-#         print('success!\n')
-#     except:
-#         print('failed!\n')
-#         sys.exit(2)
-
-#     # -- add to cart --
-#     add_to_cart_n = 0
-#     while True:
-#         print('Adding product to cart...', end='')
-#         # load and locate add to cart element
-#         btn_try_count = 0
-#         while True:
-#             """wait the button to load"""
-#             try:
-#                 add_to_cart_btn = driver.find_element('xpath', xpath)
-#                 break
-#             except:
-#                 time.sleep(2)
-#                 btn_try_count += 1
-#                 if btn_try_count+1 > 10:
-#                     error(
-#                         'Maximum tries reached. No "add to cart" element found. Program terminated.')
-#                 else:
-#                     continue
-
-#         # add to cart
-#         if add_to_cart_btn.is_displayed() & add_to_cart_btn.is_enabled():
-#             time.sleep(2)
-#             add_to_cart_btn.click()
-#             print('success!')
-#             break
-#         else:
-#             print('failed!')
-#             add_to_cart_n += 1
-#             if add_to_cart_n+1 > ntry:
-#                 raise AddToCartFail
-#             else:
-#                 print(f'Trying again: {add_to_cart_n+1}/{ntry}.')
-#                 time.sleep(2)
-#                 driver.refresh()
-#             continue
-
 
 # def main():
 #     return None
