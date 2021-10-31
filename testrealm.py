@@ -186,7 +186,7 @@ def addToCart(url, xpath, driver, ntry):
             if add_to_cart_n+1 > ntry:
                 raise AddToCartFail
             else:
-                print(f'Trying again: {add_to_cart_n+1}/10.')
+                print(f'Trying again: {add_to_cart_n+1}/{ntry}.')
                 time.sleep(2)
                 driver.refresh()
             continue
