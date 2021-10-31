@@ -175,9 +175,6 @@ A Good Shopping Bot
 -----------------------------------------------------------------------------------------{}
 """.format(colr.YELLOW, colr.ENDC)
 
-SUPPLIER = 'microsoft'
-PRODUCT = 'xbox'
-
 
 # ------ arguments ------
 parser = AppArgParser(description=DESCRIPTION,
