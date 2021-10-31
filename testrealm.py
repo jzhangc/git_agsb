@@ -108,14 +108,14 @@ def warn(message, *lines):
 
 def customChromeOptions(options, headless=False):
     # Create empty profile
-    Path('./temp/chrome_profile').mkdir(parents=True, exist_ok=True)
-    Path('./temp/chrome_profile/First Run').touch()
+    Path('./.temp/chrome_profile').mkdir(parents=True, exist_ok=True)
+    Path('./.temp/chrome_profile/First Run').touch()
 
     # Set options
     if headless:
         options.headless = True
     else:
-        options.add_argument('--user-data-dir=./temp/chrome_profile/')
+        options.add_argument('--user-data-dir=./.temp/chrome_profile/')
 
 
 def addToCart(url, xpath, driver, ntry):
@@ -274,9 +274,9 @@ time.sleep(5)  # Let the user actually see something!
 driver.quit()
 
 d.quit()
-Path('./temp').exists()
-Path('./temp').is_dir()
-shutil.rmtree(Path('./temp'))
+Path('./.temp').exists()
+Path('./.temp').is_dir()
+shutil.rmtree(Path('./.temp'))
 
 d.get(product_link)
 tst_button = d.find_element('xpath', '//*[@id="test"]/button')
@@ -286,4 +286,4 @@ d.refresh()
 d.quit()
 
 d.get(product_link)
-d.save_screenshot('./temp/sc.png')
+d.save_screenshot('./.temp/sc.png')

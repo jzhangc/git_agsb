@@ -106,14 +106,14 @@ def warn(message, *lines):
 
 def customChromeOptions(options, headless=False):
     # Create empty profile
-    Path('./temp/chrome_profile').mkdir(parents=True, exist_ok=True)
-    Path('./temp/chrome_profile/First Run').touch()
+    Path('./.temp/chrome_profile').mkdir(parents=True, exist_ok=True)
+    Path('./.temp/chrome_profile/First Run').touch()
 
     # Set options
     if headless:
         options.headless = True
     else:
-        options.add_argument('--user-data-dir=./temp/chrome_profile/')
+        options.add_argument('--user-data-dir=./.temp/chrome_profile/')
 
 
 def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str = 'Clicking button...'):
@@ -266,7 +266,7 @@ if __name__ == '__main__':
         d.quit()
         print('Cleaning up...', end='')
         try:
-            shutil.rmtree('./temp/')
+            shutil.rmtree('./.temp/')
             print('done!\n')
         except OSError as e:
             print("Error: %s - %s." % (e.filename, e.strerror))
