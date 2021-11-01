@@ -39,6 +39,10 @@ class AddToCartFail(Exception):
     pass
 
 
+class ButtonClickFail(Exception):
+    pass
+
+
 class FillInTextFail(Exception):
     pass
 
@@ -219,8 +223,11 @@ def addToCart(url, xpath, driver, ntry):
         sys.exit(2)
 
     # -- add to cart --
-    clickButton(xpath=xpath, driver=driver, ntry=ntry,
-                error_exception=AddToCartFail, msg='Adding to cart...')
+    try:
+        clickButton(xpath=xpath, driver=driver, ntry=ntry,
+                    error_exception=AddToCartFail, msg='Adding to cart...')
+    except ButtonClickFail:
+        error('Add to car button not found. Program terminated.')
 
 
 def loginBestbuy(url, driver, login_email, login_password):
@@ -239,12 +246,29 @@ def loginBestbuy(url, driver, login_email, login_password):
 
     # -- log in bestbuy --
     print('Logging in...', end='')
-    fillTextbox(xpath=xpath_id, driver=driver, value=login_email, ntry=5, error_exception=FillInTextFail,
-                msg='Entering login email...', verbose=False)  # user id
-    fillTextbox(xpath=xpath_pw, driver=driver, value=login_password, ntry=5, error_exception=FillInTextFail,
-                msg='Entering login password...', verbose=False)  # pw
-    clickButton(xpath=xpath_login_btn, driver=driver, ntry=5,
-                error_exception=AddToCartFail, msg='Logging in...', verbose=False)
+    try:
+        fillTextbox(xpath=xpath_id, driver=driver, value=login_email, ntry=5, error_exception=FillInTextFail,
+                    msg='Entering login email...', verbose=False)  # user id
+    except ElementNotFound:
+        error('User email box not found. Program terminated.')
+    except FillInTextFail:
+        error('User email input fail. Program terminated.')
+
+    try:
+        fillTextbox(xpath=xpath_pw, driver=driver, value=login_password, ntry=5, error_exception=FillInTextFail,
+                    msg='Entering login password...', verbose=False)  # pw
+    except ElementNotFound:
+        error('Password box not found. Program terminated.')
+    except FillInTextFail:
+        error('Password input fail. Program terminated.')
+
+    try:
+        clickButton(xpath=xpath_login_btn, driver=driver, ntry=5,
+                    error_exception=ButtonClickFail, msg='Logging in...', verbose=False)
+    except ElementNotFound:
+        error('Log in button not found. Program terminated.')
+    except ButtonClickFail:
+        error('Clicking log in button fail. Program terminated.')
 
     try:
         time.sleep(2)
@@ -259,6 +283,8 @@ def loginBestbuy(url, driver, login_email, login_password):
 
 # def main():
 #     return None
+
+
 # ------ G variables ------
 __VERSION__ = '0.0.1'
 AUTHOR = 'Jing Zhang, PhD'
