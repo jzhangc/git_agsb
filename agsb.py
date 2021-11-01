@@ -369,9 +369,6 @@ if __name__ == '__main__':
     try:
         addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d,
                   ntry=ntry)
-    except ElementNotFound:
-        error(
-            'Maximum tries reached. No "add to cart" element found. Program terminated.')
     except AddToCartFail:
         error('Maximum tries reached. Add to cart failed.')
     finally:  # quit browser and clean up
