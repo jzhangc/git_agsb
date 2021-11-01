@@ -364,7 +364,7 @@ elif supplier == 'microsoft':
 
 # ------ main -------
 if __name__ == '__main__':
-    # -- launch broswer --
+    # -- launch browser --
     print(f'headless mode: {headless}')
     d_options = uc.ChromeOptions()
     customChromeOptions(d_options, headless=headless)
