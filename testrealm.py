@@ -67,6 +67,10 @@ r = r.get(product_link)
 
 
 # ------ classes ------
+class OpenUrlFail(Exception):
+    pass
+
+
 class ElementNotFound(Exception):
     pass
 
@@ -128,6 +132,48 @@ def customChromeOptions(options, headless=False):
         options.add_argument('--user-data-dir=./.temp/chrome_profile/')
 
 
+def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str = 'Clicking button...', verbose=True):
+    """"click a button"""
+    click_button_n = 0
+    while True:
+        if verbose:
+            print(msg, end='')
+        # load and locate add to cart element
+        btn_try_count = 0
+        while True:
+            """wait the button to load"""
+            try:
+                btn_element = driver.find_element('xpath', xpath)
+                break
+            except:
+                time.sleep(2)
+                btn_try_count += 1
+                if btn_try_count+1 > 10:
+                    raise ElementNotFound
+                else:
+                    continue
+
+        # click
+        if btn_element.is_displayed() & btn_element.is_enabled():
+            time.sleep(2)
+            btn_element.click()
+            if verbose:
+                print('success!')
+            break
+        else:
+            if verbose:
+                print('failed!')
+            click_button_n += 1
+            if click_button_n+1 > ntry:
+                raise error_exception
+            else:
+                if verbose:
+                    print(f'Trying again: {click_button_n+1}/{ntry}.')
+                time.sleep(2)
+                driver.refresh()
+            continue
+
+
 def addToCart(url, xpath, driver, ntry):
     """add to cart function"""
     # -- access website --
@@ -137,7 +183,7 @@ def addToCart(url, xpath, driver, ntry):
         print('success!\n')
     except:
         print('failed!\n')
-        sys.exit(2)
+        raise OpenUrlFail
 
     # -- add to cart --
     try:
@@ -202,7 +248,7 @@ def loginBestbuy(url, driver, login_email, login_password):
         print('success!\n')
     except:
         print('failed!\n')
-        sys.exit(2)
+        raise OpenUrlFail
 
     # -- log in bestbuy --
     print('Logging in...', end='')
@@ -256,64 +302,6 @@ product_link = 'https://www.bestbuy.ca/en-ca/product/nintendo-eshop-5-gift-card-
 product_link = 'https://www.bestbuy.ca/en-ca/product/xbox-series-x-1tb-console/14964951'
 
 add_to_cart_xpath = '//*[@id="test"]/button'
-
-
-def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str = 'Clicking button...', verbose=True):
-    """"click a button"""
-    click_button_n = 0
-    while True:
-        if verbose:
-            print(msg, end='')
-        # load and locate add to cart element
-        btn_try_count = 0
-        while True:
-            """wait the button to load"""
-            try:
-                btn_element = driver.find_element('xpath', xpath)
-                break
-            except:
-                time.sleep(2)
-                btn_try_count += 1
-                if btn_try_count+1 > 10:
-                    raise ElementNotFound
-                else:
-                    continue
-
-        # click
-        if btn_element.is_displayed() & btn_element.is_enabled():
-            time.sleep(2)
-            btn_element.click()
-            if verbose:
-                print('success!')
-            break
-        else:
-            if verbose:
-                print('failed!')
-            click_button_n += 1
-            if click_button_n+1 > ntry:
-                raise error_exception
-            else:
-                if verbose:
-                    print(f'Trying again: {click_button_n+1}/{ntry}.')
-                time.sleep(2)
-                driver.refresh()
-            continue
-
-
-def addToCart(url, xpath, driver, ntry):
-    # -- access website --
-    """add to cart function"""
-    print(f'Accessing url: {url}...', end='')
-    try:
-        driver.get(url)
-        print('success!\n')
-    except:
-        print('failed!\n')
-        sys.exit(2)
-
-    # -- add to cart --
-    clickButton(xpath=xpath, driver=driver, ntry=ntry,
-                error_exception=AddToCartFail, msg='Adding to cart...')
 
 
 d_options = uc.ChromeOptions()

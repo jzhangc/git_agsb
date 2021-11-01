@@ -31,6 +31,10 @@ from selenium.webdriver.remote.errorhandler import NoSuchElementException
 
 
 # ------ classes ------
+class OpenUrlFail(Exception):
+    pass
+
+
 class ElementNotFound(Exception):
     pass
 
@@ -168,6 +172,25 @@ def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str =
             continue
 
 
+def addToCart(url, xpath, driver, ntry):
+    """add to cart function"""
+    # -- access website --
+    print(f'Accessing url: {url}...', end='')
+    try:
+        driver.get(url)
+        print('success!\n')
+    except:
+        print('failed!\n')
+        raise OpenUrlFail
+
+    # -- add to cart --
+    try:
+        clickButton(xpath=xpath, driver=driver, ntry=ntry,
+                    error_exception=AddToCartFail, msg='Adding to cart...')
+    except ButtonClickFail:
+        error('Add to car button not found. Program terminated.')
+
+
 def fillTextbox(xpath, driver,
                 value, ntry: int,
                 error_exception: Exception, msg: str = 'Filling in text...', verbose=True):
@@ -211,25 +234,6 @@ def fillTextbox(xpath, driver,
             continue
 
 
-def addToCart(url, xpath, driver, ntry):
-    """add to cart function"""
-    # -- access website --
-    print(f'Accessing url: {url}...', end='')
-    try:
-        driver.get(url)
-        print('success!\n')
-    except:
-        print('failed!\n')
-        sys.exit(2)
-
-    # -- add to cart --
-    try:
-        clickButton(xpath=xpath, driver=driver, ntry=ntry,
-                    error_exception=AddToCartFail, msg='Adding to cart...')
-    except ButtonClickFail:
-        error('Add to car button not found. Program terminated.')
-
-
 def loginBestbuy(url, driver, login_email, login_password):
     """add to cart function"""
     # -- variables --
@@ -242,7 +246,7 @@ def loginBestbuy(url, driver, login_email, login_password):
         print('success!\n')
     except:
         print('failed!\n')
-        sys.exit(2)
+        raise OpenUrlFail
 
     # -- log in bestbuy --
     print('Logging in...', end='')
@@ -369,6 +373,8 @@ if __name__ == '__main__':
     try:
         addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d,
                   ntry=ntry)
+    except OpenUrlFail:
+        error('Product URL cannot be reached.')
     except AddToCartFail:
         error('Maximum tries reached. Add to cart failed.')
     finally:  # quit browser and clean up
