@@ -88,7 +88,7 @@ elif supplier == 'walmart':
     """to be completed"""
     add_to_cart_xpath = '/html/body/div[1]/div/div[4]/div/div/div[1]/div[3]/div[2]/div/div[2]/div[2]/div/button[1]'
     if product == 'xsx':
-        product_link = ''
+        product_link = 'https://www.walmart.ca/en/ip/xbox-series-x/6000201786332?cmpid=AF_CA_1709054_1&utm_source=rakuten&utm_medium=affiliate&utm_campaign=always_on&utm_content=10&utm_id=AF_CA_1709054_1&siteID=AKGBlS8SPlM-QK_GLz28of76UQwD5B9gqA&wmlspartner=AKGBlS8SPlM'
     elif product == 'xss':
         product_link = 'https://www.walmart.ca/en/ip/xbox-series-s/6000201790919'
     elif product == 'ps5disc':
