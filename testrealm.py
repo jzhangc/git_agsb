@@ -32,106 +32,24 @@ from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.remote.errorhandler import NoSuchElementException
-from requests_html import HTMLSession, AsyncHTMLSession
+from utils.error_handlers import *
+from utils.app_utils import *
+from utils.wb_utils import customChromeOptions
+# from requests_html import HTMLSession, AsyncHTMLSession
 
 import config
 
-# ------ G variables ------
-VERSION = '0.0.1'
-SUPPLIER = 'microsoft'
-PRODUCT = 'xbox'
 
-XBOX_LINK = ''
-PS5_LINK = ''
+# ------ G variables ------
 
 
 # ------ variables ------
-if SUPPLIER == 'microsoft':
-    if PRODUCT == 'xbox':
-        product_link = "https://www.xbox.com/en-ca/configure/8WJ714N3RBTL?ranMID=36509&ranEAID=AKGBlS8SPlM&ranSiteID=AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ&epi=AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ&irgwc=1&OCID=AID2200057_aff_7814_1243925&tduid=%28ir__lkprzt0gd0kf6j3xn91u1x99af2xrfsfusvurmhu00%29%287814%29%281243925%29%28AKGBlS8SPlM-GV4BRGqhq_Am72VVaANyMQ%29%28%29&irclickid=_lkprzt0gd0kf6j3xn91u1x99af2xrfsfusvurmhu00"
-    else:
-        product_link = None
-elif SUPPLIER == 'bestbuy':
-    if PRODUCT == 'xbox':
-        product_link = 'https://www.bestbuy.ca/en-ca/product/14964951'
-    elif PRODUCT == 'PS5':
-        product_link = ''
-elif SUPPLIER == 'walmart':
-    if PRODUCT == 'xbox':
-        product_link = 'https://www.walmart.ca/en/ip/xbox-series-x/6000201786332?cmpid=AF_CA_1709054_1&utm_source=rakuten&utm_medium=affiliate&utm_campaign=always_on&utm_content=10&utm_id=AF_CA_1709054_1&siteID=AKGBlS8SPlM-Jaq2E6vIoIaPd.AS3dXYAg&wmlspartner=AKGBlS8SPlM'
-    elif PRODUCT == 'PS5':
-        product_link = ''
-
-r = HTMLSession()
-r = r.get(product_link)
 
 
 # ------ classes ------
-class OpenUrlFail(Exception):
-    pass
-
-
-class ElementNotFound(Exception):
-    pass
-
-
-class ButtonClickFail(Exception):
-    pass
-
-
-class AddToCartFail(Exception):
-    pass
-
-
-class FillInTextFail(Exception):
-    pass
-
-
-class LoginFail(Exception):
-    pass
-
-
-class colr:
-    WHITE = '\033[0;97m'
-    WHITE_B = '\033[1;97m'
-    YELLOW = '\033[0;33m'
-    YELLOW_B = '\033[1;33m'
-    RED = '\033[0;31m'
-    RED_B = '\033[1;31m'
-    BLUE = '\033[0;94m'
-    BLUE_B = '\033[1;94m'
-    CYAN = '\033[0;36m'
-    CYAN_B = '\033[1;36m'
-    ENDC = '\033[0m'  # end colour
 
 
 # ------ functions --------
-def error(message, *lines):
-    """stole from: https://github.com/alexjc/neural-enhance"""
-    string = "\n{}ERROR: " + message + "{}\n" + \
-        "\n".join(lines) + ("{}\n" if lines else "{}")
-    print(string.format(colr.RED_B, colr.RED, colr.ENDC))
-    sys.exit(2)
-
-
-def warn(message, *lines):
-    """stole from: https://github.com/alexjc/neural-enhance"""
-    string = '\n{}WARNING: ' + message + '{}\n' + '\n'.join(lines) + '{}\n'
-    print(string.format(colr.YELLOW_B, colr.YELLOW, colr.ENDC))
-
-
-def customChromeOptions(options, headless=False):
-    # Create empty profile
-    Path('./.temp/chrome_profile').mkdir(parents=True, exist_ok=True)
-    Path('./.temp/chrome_profile/First Run').touch()
-
-    # Set options
-    if headless:
-        options.headless = True
-    else:
-        options.add_argument('--user-data-dir=./.temp/chrome_profile/')
-
-
 def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str = 'Clicking button...', verbose=True):
     """"click a button"""
     click_button_n = 0
@@ -285,15 +203,6 @@ def loginBestbuy(url, driver, login_email, login_password):
             raise LoginFail
     except NoSuchElementException:
         print('success!')
-
-
-# def enterData(field, data, driver):
-#     try:
-#         driver.find_element_by_xpath(field).send_keys(data)
-#         pass
-#     except Exception:
-#         time.sleep(1)
-#         enterData(field, data, driver)
 
 
 # ------ test realm ------
