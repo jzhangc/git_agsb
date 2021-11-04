@@ -85,6 +85,16 @@ def addToCart(url, xpath, driver, ntry):
         error('Add to car button not found. Program terminated.')
 
 
+def removeItem(xpath, driver, ntry):
+    """remove item"""
+    # -- remove item --
+    try:
+        clickButton(xpath=xpath, driver=driver, ntry=ntry,
+                    error_exception=AddToCartFail, msg='Removing item...')
+    except ButtonClickFail:
+        error('Remove item button not found. Program terminated.')
+
+
 def fillTextbox(xpath, driver,
                 value, ntry: int,
                 error_exception: Exception, msg: str = 'Filling in text...', verbose=True):

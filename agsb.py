@@ -97,12 +97,16 @@ elif supplier == 'walmart':
         product_link = ''
 elif supplier == 'microsoft':
     """to be completed"""
+    add_to_cart_xpath = '//*[@id="PageContent"]/section/div/div/div/div/div/div[3]/button'
+    # checkout_xpath = '//*[@id="store-cart-root"]/div/div/div/section[2]/div/div/button'
+    # placeorder_xpath = '//*[@id="ember1031"]'  # for controller
+    # removeitem_xpath = '//*[@id="store-cart-root"]/div/div/div/section[1]/div/div/div/div[1]/div[1]/div/div[2]/div[1]/div/button[1]'  # controller
     if product == 'xsx':
-        add_to_cart_xpath = '//*[@id="PageContent"]/section/div/div/div/div/div/div[3]/button'
         product_link = 'https://www.xbox.com/en-ca/configure/8wj714n3rbtl?ranMID=24542&ranEAID=jrr8pPQxhfE&ranSiteID=jrr8pPQxhfE-XmpeLyy2I9TgR3Pno2V1Fg&epi=jrr8pPQxhfE-XmpeLyy2I9TgR3Pno2V1Fg&irgwc=1&OCID=AID2200057_aff_7593_1243925&tduid=%28ir__ro0hjxxclgkf6n9twymcrahqb22xo0odkovurmhu00%29%287593%29%281243925%29%28jrr8pPQxhfE-XmpeLyy2I9TgR3Pno2V1Fg%29%28%29&irclickid=_ro0hjxxclgkf6n9twymcrahqb22xo0odkovurmhu00'
     elif product == 'xss':
         # may need to change
-        add_to_cart_xpath = '//*[@id="PageContent"]/section/div/div/div/div/div/div[3]/button'
+        # placeorder_xpath = '//*[@id="ember1033"]  # for xss
+        # removeitem_xpath = '//*[@id="store-cart-root"]/div/div/div/section[1]/div/div/div/div[1]/div/div/div[2]/div[1]/div/button[1]'
         product_link = 'https://www.xbox.com/en-ca/configure/942J774TP9JN?ranMID=36509&ranEAID=AKGBlS8SPlM&ranSiteID=AKGBlS8SPlM-Fn51Adsweeh1DmNoEYpTKA&epi=AKGBlS8SPlM-Fn51Adsweeh1DmNoEYpTKA&irgwc=1&OCID=AID2200057_aff_7814_1243925&tduid=%28ir__ro0hjxxclgkf6n9twymcrahqb22xoxjo9kvurmhu00%29%287814%29%281243925%29%28AKGBlS8SPlM-Fn51Adsweeh1DmNoEYpTKA%29%28%29&irclickid=_ro0hjxxclgkf6n9twymcrahqb22xoxjo9kvurmhu00'
     else:
         error('No playstation is sold by Microsoft.', 'Try other suppliers.')

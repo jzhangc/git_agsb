@@ -92,7 +92,7 @@ def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str =
             continue
 
 
-def addToCart(url, xpath, driver, ntry):
+def addToCart(cart_url, xpath, driver, ntry):
     """add to cart function"""
     # -- access website --
     print(f'Accessing url: {url}...', end='')
@@ -205,17 +205,53 @@ def loginBestbuy(url, driver, login_email, login_password):
         print('success!')
 
 
+def checkOut(url, xpath, driver, ntry):
+    """check out"""
+    print(f'Locating the checkout page...', end='')
+    try:
+        # driver.get(url)
+        print('success!\n')
+    except:
+        print('failed!\n')
+        raise OpenUrlFail
+
+    # -- checking out --
+    try:
+        clickButton(xpath=xpath, driver=driver, ntry=ntry,
+                    error_exception=AddToCartFail, msg='checking out...')
+    except ButtonClickFail:
+        error('Check out button not found. Program terminated.')
+
+
+def removeItem(xpath, driver, ntry):
+    """remove item"""
+    # -- remove item --
+    try:
+        clickButton(xpath=xpath, driver=driver, ntry=ntry,
+                    error_exception=AddToCartFail, msg='Removing item...')
+    except ButtonClickFail:
+        error('Remove item button not found. Program terminated.')
+
+
 # ------ test realm ------
 # -- for selenium --
 product_link = 'https://www.bestbuy.ca/en-ca/product/nintendo-eshop-5-gift-card-digital-download/14583634'
 product_link = 'https://www.bestbuy.ca/en-ca/product/xbox-series-x-1tb-console/14964951'
+product_link = 'https://www.xbox.com/en-ca/configure/942J774TP9JN?ranMID=36509&ranEAID=AKGBlS8SPlM&ranSiteID=AKGBlS8SPlM-Fn51Adsweeh1DmNoEYpTKA&epi=AKGBlS8SPlM-Fn51Adsweeh1DmNoEYpTKA&irgwc=1&OCID=AID2200057_aff_7814_1243925&tduid=%28ir__ro0hjxxclgkf6n9twymcrahqb22xoxjo9kvurmhu00%29%287814%29%281243925%29%28AKGBlS8SPlM-Fn51Adsweeh1DmNoEYpTKA%29%28%29&irclickid=_ro0hjxxclgkf6n9twymcrahqb22xoxjo9kvurmhu00'
+cart_link = 'https://www.xbox.com/en-CA/cart'
 
-add_to_cart_xpath = '//*[@id="test"]/button'
+
+add_to_cart_xpath = '//*[@id="PageContent"]/section/div/div/div/div/div/div[3]/button'
+removeitem_xpath = '//*[@id="store-cart-root"]/div/div/div/section[1]/div/div/div/div[1]/div/div/div[2]/div[1]/div/button[1]'
 
 
 d_options = uc.ChromeOptions()
 customChromeOptions(d_options, headless=False)
 d = uc.Chrome(options=d_options)
+# d.get(product_link)
+# d.find_element()
+# clickButton(xpath=add_to_cart_xpath, driver=d, ntry=5,
+#             error_exception=AddToCartFail, msg='Adding to cart...')
 addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d, ntry=5)
 d.quit()
 
