@@ -95,9 +95,9 @@ def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str =
 def addToCart(cart_url, xpath, driver, ntry):
     """add to cart function"""
     # -- access website --
-    print(f'Accessing url: {url}...', end='')
+    print(f'Accessing url: {cart_url}...', end='')
     try:
-        driver.get(url)
+        driver.get(cart_url)
         print('success!\n')
     except:
         print('failed!\n')
