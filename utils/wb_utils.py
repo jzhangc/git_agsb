@@ -6,7 +6,7 @@ from pathlib import Path
 
 from selenium.webdriver.remote.errorhandler import NoSuchElementException
 
-from utils.error_handlers import (AddToCartFail, ButtonClickFail,
+from utils.error_handlers import (AddToCartFail, ButtonClickFail, CheckOutFail, RemoveItemFail,
                                   ElementNotFound, FillInTextFail, LoginFail,
                                   OpenUrlFail, error)
 
