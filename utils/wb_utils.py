@@ -85,12 +85,38 @@ def addToCart(url, xpath, driver, ntry):
         error('Add to car button not found. Program terminated.')
 
 
-def removeItem(xpath, driver, ntry):
+def checkOut(cart_url, xpath, driver, ntry):
+    """check out"""
+    print(f'Locating cart page...', end='')
+    try:
+        driver.get(cart_url)
+        print('success!\n')
+    except:
+        print('failed!\n')
+        raise OpenUrlFail
+
+    # -- checking out --
+    try:
+        clickButton(xpath=xpath, driver=driver, ntry=ntry,
+                    error_exception=CheckOutFail, msg='checking out...')
+    except ButtonClickFail:
+        error('Checkout button not found. Program terminated.')
+
+
+def removeItem(cart_url, xpath, driver, ntry):
     """remove item"""
+    print(f'Locating cart page...', end='')
+    try:
+        driver.get(cart_url)
+        print('success!\n')
+    except:
+        print('failed!\n')
+        raise OpenUrlFail
+
     # -- remove item --
     try:
         clickButton(xpath=xpath, driver=driver, ntry=ntry,
-                    error_exception=AddToCartFail, msg='Removing item...')
+                    error_exception=RemoveItemFail, msg='Removing item...')
     except ButtonClickFail:
         error('Remove item button not found. Program terminated.')
 

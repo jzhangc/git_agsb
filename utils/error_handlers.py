@@ -18,6 +18,14 @@ class AddToCartFail(Exception):
     pass
 
 
+class CheckOutFail(Exception):
+    pass
+
+
+class RemoveItemFail(Exception):
+    pass
+
+
 class ButtonClickFail(Exception):
     pass
 

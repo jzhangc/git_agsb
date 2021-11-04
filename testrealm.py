@@ -205,11 +205,11 @@ def loginBestbuy(url, driver, login_email, login_password):
         print('success!')
 
 
-def checkOut(url, xpath, driver, ntry):
+def checkOut(cart_url, xpath, driver, ntry):
     """check out"""
-    print(f'Locating the checkout page...', end='')
+    print(f'Locating cart page...', end='')
     try:
-        # driver.get(url)
+        driver.get(cart_url)
         print('success!\n')
     except:
         print('failed!\n')
@@ -218,17 +218,25 @@ def checkOut(url, xpath, driver, ntry):
     # -- checking out --
     try:
         clickButton(xpath=xpath, driver=driver, ntry=ntry,
-                    error_exception=AddToCartFail, msg='checking out...')
+                    error_exception=CheckOutFail, msg='checking out...')
     except ButtonClickFail:
-        error('Check out button not found. Program terminated.')
+        error('Checkout button not found. Program terminated.')
 
 
-def removeItem(xpath, driver, ntry):
+def removeItem(cart_url, xpath, driver, ntry):
     """remove item"""
+    print(f'Locating cart page...', end='')
+    try:
+        driver.get(cart_url)
+        print('success!\n')
+    except:
+        print('failed!\n')
+        raise OpenUrlFail
+
     # -- remove item --
     try:
         clickButton(xpath=xpath, driver=driver, ntry=ntry,
-                    error_exception=AddToCartFail, msg='Removing item...')
+                    error_exception=RemoveItemFail, msg='Removing item...')
     except ButtonClickFail:
         error('Remove item button not found. Program terminated.')
 
@@ -238,11 +246,14 @@ def removeItem(xpath, driver, ntry):
 product_link = 'https://www.bestbuy.ca/en-ca/product/nintendo-eshop-5-gift-card-digital-download/14583634'
 product_link = 'https://www.bestbuy.ca/en-ca/product/xbox-series-x-1tb-console/14964951'
 product_link = 'https://www.xbox.com/en-ca/configure/942J774TP9JN?ranMID=36509&ranEAID=AKGBlS8SPlM&ranSiteID=AKGBlS8SPlM-Fn51Adsweeh1DmNoEYpTKA&epi=AKGBlS8SPlM-Fn51Adsweeh1DmNoEYpTKA&irgwc=1&OCID=AID2200057_aff_7814_1243925&tduid=%28ir__ro0hjxxclgkf6n9twymcrahqb22xoxjo9kvurmhu00%29%287814%29%281243925%29%28AKGBlS8SPlM-Fn51Adsweeh1DmNoEYpTKA%29%28%29&irclickid=_ro0hjxxclgkf6n9twymcrahqb22xoxjo9kvurmhu00'
-cart_link = 'https://www.xbox.com/en-CA/cart'
-
+cart_link = 'https://www.bestbuy.ca/en-ca/basket'
+add_to_cart_xpath = '//*[@id="test"]/button'
+checkout_xpath = '//*[@id="root"]/div/div[4]/div[2]/div/section/div/main/section/section[2]/div[3]/div/a'
+removeitem_xpath = '//*[@id="lineitem-9efa169c-9739-4c67-ab0e-581ed702a7e9"]/div[3]/div[2]/section[1]/div[2]/div[2]/div/div[1]/button'
 
 add_to_cart_xpath = '//*[@id="PageContent"]/section/div/div/div/div/div/div[3]/button'
 removeitem_xpath = '//*[@id="store-cart-root"]/div/div/div/section[1]/div/div/div/div[1]/div/div/div[2]/div[1]/div/button[1]'
+cart_link = 'https://www.xbox.com/en-CA/cart'
 
 
 d_options = uc.ChromeOptions()
@@ -253,6 +264,9 @@ d = uc.Chrome(options=d_options)
 # clickButton(xpath=add_to_cart_xpath, driver=d, ntry=5,
 #             error_exception=AddToCartFail, msg='Adding to cart...')
 addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d, ntry=5)
+checkOut(cart_url=cart_link, xpath=checkout_xpath, driver=d, ntry=5)
+removeItem()
+
 d.quit()
 
 login_link = 'https://www.bestbuy.ca/identity/en-ca/signin?tid=5XvfgvshhDS%252BAUwIKYQLdlGyDnspKQWVP6klxCtzlm9zZddU69rdYiEv8%252BKBsX%252FPQLHeKMT5KnTMJ76PcNFNU3bSKXM6TXzLx2zFglD4Nqsn8LkZFF5msu%252FcdviBbQZgYRdcDUj2A1GopOW%252FUZluebfuKb%252FqTSZHuIoJOC8GL%252BzX57o9Vc7X0rhVS9h6FR%252FUXeMKoLKOP7u0dqJMNJuhqdUKggjaVkjgsyOYA6jfvw3XHgbQzZBQblIoQgGPKq6ARgwdU97%252FHk%252BiOP26yKrxzqozPOCSuhNLgkd1T2k87qEFmhLzgUfuAdmn%252Bzgj1F10'
