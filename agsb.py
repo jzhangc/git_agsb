@@ -24,8 +24,10 @@ from pathlib import Path
 import undetected_chromedriver.v2 as uc
 
 from utils.app_utils import AppArgParser, addBoolArg, colr
-from utils.error_handlers import (AddToCartFail, OpenUrlFail, error)
-from utils.wb_utils import (addToCart, customChromeOptions, loginBestbuy)
+from utils.error_handlers import (
+    AddToCartFail, CheckOutFail, OpenUrlFail, error)
+from utils.wb_utils import (
+    addToCart, checkOut, customChromeOptions, loginBestbuy)
 
 # from requests_html import HTMLSession
 # from selenium import webdriver
@@ -74,8 +76,10 @@ supplier = args.supplier
 ntry = args.tries
 
 if supplier == 'bestbuy':
+    cart_link = 'https://www.bestbuy.ca/en-ca/basket'
     login_link = 'https://www.bestbuy.ca/identity/en-ca/signin?tid=5XvfgvshhDS%252BAUwIKYQLdlGyDnspKQWVP6klxCtzlm9zZddU69rdYiEv8%252BKBsX%252FPQLHeKMT5KnTMJ76PcNFNU3bSKXM6TXzLx2zFglD4Nqsn8LkZFF5msu%252FcdviBbQZgYRdcDUj2A1GopOW%252FUZluebfuKb%252FqTSZHuIoJOC8GL%252BzX57o9Vc7X0rhVS9h6FR%252FUXeMKoLKOP7u0dqJMNJuhqdUKggjaVkjgsyOYA6jfvw3XHgbQzZBQblIoQgGPKq6ARgwdU97%252FHk%252BiOP26yKrxzqozPOCSuhNLgkd1T2k87qEFmhLzgUfuAdmn%252Bzgj1F10'
     add_to_cart_xpath = '//*[@id="test"]/button'
+    checkout_xpath = '//*[@id="root"]/div/div[4]/div[2]/div/section/div/main/section/section[2]/div[3]/div/a'
     if product == 'xsx':
         product_link = 'https://www.bestbuy.ca/en-ca/product/14964951'
     elif product == 'xss':
@@ -97,8 +101,9 @@ elif supplier == 'walmart':
         product_link = ''
 elif supplier == 'microsoft':
     """to be completed"""
+    cart_link = 'https://www.xbox.com/en-CA/cart'
     add_to_cart_xpath = '//*[@id="PageContent"]/section/div/div/div/div/div/div[3]/button'
-    # checkout_xpath = '//*[@id="store-cart-root"]/div/div/div/section[2]/div/div/button'
+    checkout_xpath = '//*[@id="store-cart-root"]/div/div/div/section[2]/div/div/button'
     # placeorder_xpath = '//*[@id="ember1031"]'  # for controller
     # removeitem_xpath = '//*[@id="store-cart-root"]/div/div/div/section[1]/div/div/div/div[1]/div[1]/div/div[2]/div[1]/div/button[1]'  # controller
     if product == 'xsx':
@@ -124,10 +129,13 @@ if __name__ == '__main__':
     try:
         addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d,
                   ntry=ntry)
+        checkOut(cart_url=cart_link, xpath=checkout_xpath, driver=d, ntry=ntry)
     except OpenUrlFail:
         error('Product URL cannot be reached.')
     except AddToCartFail:
         error('Maximum tries reached. Add to cart failed.')
+    except CheckOutFail:
+        error('Maximum tries reached. Checkout failed.')
     finally:  # quit browser and clean up
         d.quit()
         print('Cleaning up...', end='')
