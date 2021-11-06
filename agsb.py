@@ -29,6 +29,11 @@ from utils.error_handlers import (
 from utils.wb_utils import (
     addToCart, checkOut, customChromeOptions, loginBestbuy)
 
+try:
+    from config import *
+except Exception as e:
+    error('Make sure to properly set up the config.py file.')
+
 # from requests_html import HTMLSession
 # from selenium import webdriver
 # from selenium.webdriver.support.ui import Select
@@ -65,6 +70,8 @@ parser.add_argument('-t', '--tries', type=int,
                     help='str. Maximum number of tries. (Default: %(default)s)')
 addBoolArg(parser=parser, name='headless', input_type='flag', default=False,
            help='Run in headless mode. (Default: %(default)s)')
+addBoolArg(parser=parser, name='login_first', input_type='flag', default=True,
+           help='If to log in first. (Default: %(default)s)')
 
 args = parser.parse_args()
 
@@ -74,6 +81,7 @@ headless = args.headless
 product = args.product
 supplier = args.supplier
 ntry = args.tries
+login_first = args.login_first
 
 if supplier == 'bestbuy':
     cart_link = 'https://www.bestbuy.ca/en-ca/basket'
@@ -124,6 +132,8 @@ if __name__ == '__main__':
     d_options = uc.ChromeOptions()
     customChromeOptions(d_options, headless=headless)
     d = uc.Chrome(options=d_options)
+
+    # -- log in or not --
 
     # -- purchase --
     try:
