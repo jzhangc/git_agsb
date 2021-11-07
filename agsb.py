@@ -80,7 +80,7 @@ product = args.product
 supplier = args.supplier
 ntry = args.tries
 login_first = args.login_first
-configfile_dir = args.config
+config_dict = configReader(args.config)
 
 if supplier == 'bestbuy':
     cart_link = 'https://www.bestbuy.ca/en-ca/basket'
