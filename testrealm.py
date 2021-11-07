@@ -21,13 +21,16 @@ https://medium.com/analytics-vidhya/how-to-easily-bypass-recaptchav2-with-seleni
 '''
 
 # ------ libraries ------
+from logging import debug
 import shutil
 import undetected_chromedriver.v2 as uc
 import argparse
 import sys
 import time
 import os
+import configparser
 
+from tqdm import tqdm
 from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select, WebDriverWait
@@ -49,6 +52,25 @@ from config import *
 
 
 # ------ functions --------
+def configReader(config_file):
+    cfg = configparser.ConfigParser()
+    out_dict = {}
+
+    try:
+        cfg.read(config_file)
+    except:
+        error(f'Reading config file failed')
+
+    for section in tqdm(cfg.sections()):
+        for option in cfg.options(section):
+            print(f'Reading {option} from {section}')
+            try:
+                out_dict[option] = cfg.get(section, option)
+            except:
+                print(f'Reading config: {item} error. Setting {item} to None.')
+                out_dict[option] = None
+
+    return out_dict
 
 
 # ------ test realm ------
@@ -89,6 +111,17 @@ d = uc.Chrome(options=d_options)
 loginBestbuy(url=login_link, driver=d,
              login_email='jzhangc@gmail.com', login_password='26342531')
 d.quit()
+
+
+# ------ config test ------
+cfg = configparser.ConfigParser()
+cfg.read('./config.ini')
+type(cfg.sections())
+
+
+tst_cfg_dict = configReader('./config.ini')
+tst_cfg_dict['cc_code']
+
 
 # ------ old ------
 driver = webdriver.Chrome('./driver/chromedriver')

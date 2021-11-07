@@ -3,6 +3,9 @@
 # ------ libraries ------
 import argparse
 import sys
+import configparser
+
+from tqdm import tqdm
 
 
 # ------ classes ------
@@ -53,3 +56,24 @@ def addBoolArg(parser, name, help, input_type, default=False):
     group.add_argument('--no-' + name, dest=name,
                        action='store_false', help=input_type + '. ''(Not to) ' + help)
     parser.set_defaults(**{name: default})
+
+
+def configReader(config_file):
+    cfg = configparser.ConfigParser()
+    out_dict = {}
+
+    try:
+        cfg.read(config_file)
+    except:
+        error(f'Reading config file failed')
+
+    for section in tqdm(cfg.sections()):
+        for option in cfg.options(section):
+            print(f'Reading {option} from {section}')
+            try:
+                out_dict[option] = cfg.get(section, option)
+            except:
+                print(f'Reading config: {item} error. Setting {item} to None.')
+                out_dict[option] = None
+
+    return out_dict

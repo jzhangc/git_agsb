@@ -5,7 +5,7 @@ test
 .DS_Store
 .vscode
 log
-config.py
+config*
 driver/
 temp/
 .temp/
