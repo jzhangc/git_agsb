@@ -56,11 +56,17 @@ def configReader(config_file, verbose=False):
     """config reader"""
     cfg = configparser.ConfigParser()
     out_dict = {}
+    configfile_dir = os.path.normpath(os.path.abspath(
+        os.path.expanduser(config_file)))
 
     try:
-        cfg.read(config_file)
-    except:
-        error(f'Reading config file failed')
+        with open(configfile_dir) as f:
+            cfg.read(os.path.normpath(os.path.abspath(
+                os.path.expanduser(config_file))))
+    except FileNotFoundError:
+        error(f'Config file not found.', 'Check path and try again.')
+    except Exception:
+        error(f'Config find found but failed to load.')
 
     for section in tqdm(cfg.sections()):
         for option in cfg.options(section):
