@@ -53,6 +53,7 @@ from config import *
 
 # ------ functions --------
 def configReader(config_file):
+    """config reader"""
     cfg = configparser.ConfigParser()
     out_dict = {}
 
@@ -67,10 +68,9 @@ def configReader(config_file):
             try:
                 out_dict[option] = cfg.get(section, option)
             except:
-                print(f'Reading config: {item} error. Setting {item} to None.')
+                print(
+                    f'Reading config: {option} error. Setting {option} to None.')
                 out_dict[option] = None
-
-    return out_dict
 
 
 # ------ test realm ------

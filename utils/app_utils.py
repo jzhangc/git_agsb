@@ -6,6 +6,7 @@ import sys
 import configparser
 
 from tqdm import tqdm
+from utils.error_handlers import error
 
 
 # ------ classes ------
@@ -59,6 +60,7 @@ def addBoolArg(parser, name, help, input_type, default=False):
 
 
 def configReader(config_file):
+    """config reader"""
     cfg = configparser.ConfigParser()
     out_dict = {}
 
@@ -73,7 +75,6 @@ def configReader(config_file):
             try:
                 out_dict[option] = cfg.get(section, option)
             except:
-                print(f'Reading config: {item} error. Setting {item} to None.')
+                print(
+                    f'Reading config: {option} error. Setting {option} to None.')
                 out_dict[option] = None
-
-    return out_dict
