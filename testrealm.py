@@ -72,6 +72,8 @@ def configReader(config_file):
                     f'Reading config: {option} error. Setting {option} to None.')
                 out_dict[option] = None
 
+    return out_dict
+
 
 # ------ test realm ------
 # -- for selenium --
