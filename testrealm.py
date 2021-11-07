@@ -38,8 +38,9 @@ from selenium.webdriver.remote.errorhandler import NoSuchElementException
 from utils.error_handlers import *
 from utils.app_utils import *
 from utils.wb_utils import *
+from utils.misc import colr
 # from requests_html import HTMLSession, AsyncHTMLSession
-from config import *
+# from config import *
 
 
 # ------ G variables ------
@@ -52,34 +53,6 @@ from config import *
 
 
 # ------ functions --------
-def configReader(config_file, verbose=False):
-    """config reader"""
-    cfg = configparser.ConfigParser()
-    out_dict = {}
-    configfile_dir = os.path.normpath(os.path.abspath(
-        os.path.expanduser(config_file)))
-
-    try:
-        with open(configfile_dir) as f:
-            cfg.read(os.path.normpath(os.path.abspath(
-                os.path.expanduser(config_file))))
-    except FileNotFoundError:
-        error(f'Config file not found.', 'Check path and try again.')
-    except Exception:
-        error(f'Config find found but failed to load.')
-
-    for section in tqdm(cfg.sections()):
-        for option in cfg.options(section):
-            if verbose:
-                print(f'Reading {option} from {section}')
-            try:
-                out_dict[option] = cfg.get(section, option)
-            except:
-                print(
-                    f'Reading config: {option} error. Setting {option} to None.')
-                out_dict[option] = None
-
-    return out_dict
 
 
 # ------ test realm ------

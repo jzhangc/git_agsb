@@ -2,7 +2,7 @@
 # ------ libraries ------
 import sys
 
-from utils.app_utils import colr
+from utils.misc import colr
 
 
 # ------ classes ------

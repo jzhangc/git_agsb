@@ -23,11 +23,12 @@ from pathlib import Path
 
 import undetected_chromedriver.v2 as uc
 
-from utils.app_utils import AppArgParser, colr, addBoolArg, configReader
+from utils.app_utils import AppArgParser, addBoolArg, configReader
 from utils.error_handlers import (
     AddToCartFail, CheckOutFail, OpenUrlFail, error)
 from utils.wb_utils import (
     addToCart, checkOut, customChromeOptions, loginBestbuy)
+from utils.misc import colr
 
 # from requests_html import HTMLSession
 # from selenium import webdriver
