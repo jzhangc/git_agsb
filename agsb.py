@@ -23,16 +23,11 @@ from pathlib import Path
 
 import undetected_chromedriver.v2 as uc
 
-from utils.app_utils import AppArgParser, addBoolArg, colr
+from utils.app_utils import AppArgParser, colr, addBoolArg, configReader
 from utils.error_handlers import (
     AddToCartFail, CheckOutFail, OpenUrlFail, error)
 from utils.wb_utils import (
     addToCart, checkOut, customChromeOptions, loginBestbuy)
-
-try:
-    from config import *
-except Exception as e:
-    error('Make sure to properly set up the config.py file.')
 
 # from requests_html import HTMLSession
 # from selenium import webdriver
@@ -68,6 +63,9 @@ parser.add_argument('-s', '--supplier', type=str,
 parser.add_argument('-t', '--tries', type=int,
                     default=10,
                     help='str. Maximum number of tries. (Default: %(default)s)')
+parser.add_argument('-c', '--config', type=str,
+                    default='config.ini',
+                    help='str. Maximum number of tries. (Default: %(default)s)')
 addBoolArg(parser=parser, name='headless', input_type='flag', default=False,
            help='Run in headless mode. (Default: %(default)s)')
 addBoolArg(parser=parser, name='login_first', input_type='flag', default=True,
@@ -82,6 +80,7 @@ product = args.product
 supplier = args.supplier
 ntry = args.tries
 login_first = args.login_first
+configfile_dir = args.config
 
 if supplier == 'bestbuy':
     cart_link = 'https://www.bestbuy.ca/en-ca/basket'

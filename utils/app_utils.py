@@ -7,7 +7,7 @@ import os
 import configparser
 
 from tqdm import tqdm
-from utils.error_handlers import error
+from utils.error_handlers import error, warn
 
 
 # ------ classes ------
@@ -83,7 +83,7 @@ def configReader(config_file, verbose=False):
             try:
                 out_dict[option] = cfg.get(section, option)
             except:
-                print(
+                warn(
                     f'Reading config: {option} error. Setting {option} to None.')
                 out_dict[option] = None
 

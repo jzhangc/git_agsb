@@ -128,7 +128,7 @@ cfg.read('./config.ini')
 type(cfg.sections())
 
 
-tst_cfg_dict = configReader('./config.ini')
+tst_cfg_dict = configReader('config.ini', verbose=True)
 tst_cfg_dict['cc_code']
 
 
