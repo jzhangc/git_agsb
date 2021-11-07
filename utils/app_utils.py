@@ -59,7 +59,7 @@ def addBoolArg(parser, name, help, input_type, default=False):
     parser.set_defaults(**{name: default})
 
 
-def configReader(config_file):
+def configReader(config_file, verbose=False):
     """config reader"""
     cfg = configparser.ConfigParser()
     out_dict = {}
@@ -71,7 +71,8 @@ def configReader(config_file):
 
     for section in tqdm(cfg.sections()):
         for option in cfg.options(section):
-            print(f'Reading {option} from {section}')
+            if verbose:
+                print(f'Reading {option} from {section}')
             try:
                 out_dict[option] = cfg.get(section, option)
             except:
