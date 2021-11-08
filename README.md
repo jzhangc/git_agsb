@@ -26,3 +26,4 @@ The program is based on selenium. See [here](https://pypi.org/project/selenium/)
 4. Known issues
 
     - Currently only being developed for Unix-like and Linux systems.
+    - Headless mode log in fails

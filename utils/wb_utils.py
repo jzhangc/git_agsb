@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 
 from selenium.webdriver.remote.errorhandler import NoSuchElementException
-
+from fake_useragent import UserAgent
 from utils.error_handlers import *
 
 
@@ -15,11 +15,18 @@ def customChromeOptions(options, headless=False):
     Path('./.temp/chrome_profile').mkdir(parents=True, exist_ok=True)
     Path('./.temp/chrome_profile/First Run').touch()
 
+    # user agent
+    ua = UserAgent()
+    current_agent = ua.random
+
     # Set options
     if headless:
         options.headless = True
+        # options.add_argument('--user-data-dir=./.temp/chrome_profile/')
+        # options.add_argument(f'user-agent={current_agent}')
     else:
         options.add_argument('--user-data-dir=./.temp/chrome_profile/')
+        options.add_argument(f'user-agent={current_agent}')
 
 
 def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str = 'Clicking button...', verbose=True):

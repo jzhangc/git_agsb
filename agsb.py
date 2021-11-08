@@ -9,6 +9,7 @@ Waterbox
     [ ] Support both guest and logged in methods to purchase
     [x] Add headless mode in __name__ == '__main__' block (arg.add, --headless)
     [ ] Handle read only directories
+    [ ] handle captcha
 
     Optional
     [ ] Given product name search for its link
@@ -52,7 +53,8 @@ parser = AppArgParser(description=DESCRIPTION,
                       formatter_class=argparse.RawTextHelpFormatter)
 
 parser._optionals.title = f"{colr.CYAN_B}Help options{colr.ENDC}"
-
+parser.add_argument('-v', '--version', action='version',
+                    version=f'Version: {__VERSION__}')
 parser.add_argument('-p', '--product', type=str,
                     choices=['xsx', 'xss', 'ps5disc', 'ps5digital'],
                     default='xsx',
@@ -67,8 +69,6 @@ parser.add_argument('-t', '--tries', type=int,
 parser.add_argument('-c', '--config', type=str,
                     default='config.ini',
                     help='str. Config file path. (Default: %(default)s)')
-parser.add_argument('-v', '--version', action='version',
-                    version=f'Version: {__VERSION__}')
 addBoolArg(parser=parser, name='headless', input_type='flag', default=False,
            help='Run in headless mode. (Default: %(default)s)')
 addBoolArg(parser=parser, name='login_first', input_type='flag', default=True,
@@ -131,6 +131,30 @@ elif supplier == 'microsoft':
         error('No playstation is sold by Microsoft.', 'Try other suppliers.')
 
 
+# ------ functions ------
+def main(product_link, cart_link, add_to_cart_xpath, checkout_xpath, driver, ntry):
+    # -- purchase --
+    try:
+        addToCart(url=product_link, xpath=add_to_cart_xpath, driver=driver,
+                  ntry=ntry)
+        checkOut(cart_url=cart_link, xpath=checkout_xpath,
+                 driver=driver, ntry=ntry)
+    except OpenUrlFail:
+        error('Product URL cannot be reached.')
+    except AddToCartFail:
+        error('Maximum tries reached. Add to cart failed.')
+    except CheckOutFail:
+        error('Maximum tries reached. Checkout failed.')
+    finally:  # quit browser and clean up
+        d.quit()
+        print('Cleaning up...', end='')
+        try:
+            shutil.rmtree('./.temp/')
+            print('done!\n')
+        except OSError as e:
+            print("Error: %s - %s." % (e.filename, e.strerror))
+
+
 # ------ main -------
 if __name__ == '__main__':
     # -- launch browser --
@@ -139,7 +163,7 @@ if __name__ == '__main__':
     customChromeOptions(d_options, headless=headless)
     d = uc.Chrome(options=d_options)
 
-    # -- log in or not --
+    # -- log in --
     login_except_flag = True
     try:
         if supplier == 'bestbuy':
@@ -169,24 +193,10 @@ if __name__ == '__main__':
                 print("Error: %s - %s." % (e.filename, e.strerror))
 
     # -- purchase --
-    try:
-        addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d,
-                  ntry=ntry)
-        checkOut(cart_url=cart_link, xpath=checkout_xpath, driver=d, ntry=ntry)
-    except OpenUrlFail:
-        error('Product URL cannot be reached.')
-    except AddToCartFail:
-        error('Maximum tries reached. Add to cart failed.')
-    except CheckOutFail:
-        error('Maximum tries reached. Checkout failed.')
-    finally:  # quit browser and clean up
-        d.quit()
-        print('Cleaning up...', end='')
-        try:
-            shutil.rmtree('./.temp/')
-            print('done!\n')
-        except OSError as e:
-            print("Error: %s - %s." % (e.filename, e.strerror))
+    main(add_to_cart_xpath=add_to_cart_xpath, product_link=product_link, cart_link=cart_link,
+         checkout_xpath=checkout_xpath,
+         driver=d, ntry=ntry)
+
     # if headless:
     #     d.save_screenshot('./screenshots/sc.png')
     # else:
