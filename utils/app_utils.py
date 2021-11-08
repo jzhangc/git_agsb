@@ -8,7 +8,7 @@ import configparser
 
 
 from utils.error_handlers import error, warn
-from misc import colr
+from utils.misc import colr
 from tqdm import tqdm
 
 

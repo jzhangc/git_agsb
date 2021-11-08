@@ -34,6 +34,14 @@ class FillInTextFail(Exception):
     pass
 
 
+class IdFail(Exception):
+    pass
+
+
+class PasswordFail(Exception):
+    pass
+
+
 class LoginFail(Exception):
     pass
 

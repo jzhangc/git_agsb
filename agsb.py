@@ -25,7 +25,7 @@ import undetected_chromedriver.v2 as uc
 
 from utils.app_utils import AppArgParser, addBoolArg, configReader
 from utils.error_handlers import (
-    AddToCartFail, CheckOutFail, OpenUrlFail, error)
+    AddToCartFail, CheckOutFail, IdFail, LoginFail, OpenUrlFail, PasswordFail, error)
 from utils.wb_utils import (
     addToCart, checkOut, customChromeOptions, loginBestbuy)
 from utils.misc import colr
@@ -81,7 +81,7 @@ product = args.product
 supplier = args.supplier
 ntry = args.tries
 login_first = args.login_first
-config_dict = configReader(args.config)
+cfg_dict = configReader(args.config)
 
 if supplier == 'bestbuy':
     cart_link = 'https://www.bestbuy.ca/en-ca/basket'
@@ -134,6 +134,33 @@ if __name__ == '__main__':
     d = uc.Chrome(options=d_options)
 
     # -- log in or not --
+    exception_flag = True
+    try:
+        if supplier == 'bestbuy':
+            loginBestbuy(url=login_link, driver=d,
+                         login_email=cfg_dict['bestbuy_id'], login_password=cfg_dict['bestbuy_password'])
+        # elif supplier == 'microsoft':
+        #     loginMicrosoft(url=login_link, driver=d,
+        #                    login_email=cfg_dict['ms_id'], login_password=cfg_dict['ms_password'])
+        # else:
+        #     loginWalmart(url=login_link, driver=d,
+        #                  login_email=cfg_dict['walmart_id'], login_password=cfg_dict['walmart_password'])
+        exception_flag = False
+    except PasswordFail:
+        error('Incorrect login password.')
+    except IdFail:
+        error('Incorrect login id.')
+    except LoginFail:
+        error('Log in failed')
+    finally:
+        if exception_flag:  # if any exceptions, exit and do the clean up
+            d.quit()
+            print('Cleaning up...', end='')
+            try:
+                shutil.rmtree('./.temp/')
+                print('done!\n')
+            except OSError as e:
+                print("Error: %s - %s." % (e.filename, e.strerror))
 
     # -- purchase --
     try:

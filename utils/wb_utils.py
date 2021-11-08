@@ -6,9 +6,7 @@ from pathlib import Path
 
 from selenium.webdriver.remote.errorhandler import NoSuchElementException
 
-from utils.error_handlers import (AddToCartFail, ButtonClickFail, CheckOutFail, RemoveItemFail,
-                                  ElementNotFound, FillInTextFail, LoginFail,
-                                  OpenUrlFail, error)
+from utils.error_handlers import *
 
 
 # ------ functions --------
@@ -147,6 +145,7 @@ def fillTextbox(xpath, driver,
         # fill in text
         if textbox_element.is_displayed() & textbox_element.is_enabled():
             time.sleep(2)
+            textbox_element.clear()
             textbox_element.send_keys(value)
             if verbose:
                 print('success!')
@@ -180,6 +179,8 @@ def loginBestbuy(url, driver, login_email, login_password):
 
     # -- log in bestbuy --
     print('Logging in...', end='')
+
+    # -- id and pw --
     try:
         fillTextbox(xpath=xpath_id, driver=driver, value=login_email, ntry=5, error_exception=FillInTextFail,
                     msg='Entering login email...', verbose=False)  # user id
@@ -196,6 +197,21 @@ def loginBestbuy(url, driver, login_email, login_password):
     except FillInTextFail:
         error('Password input fail. Program terminated.')
 
+    pw_fail = driver.find_element(
+        by='xpath', value='//*[@id="signIn"]/fieldset/div[2]/div/div[2]')
+    email_fail = driver.find_element(
+        by='xpath', value='//*[@id="signIn"]/fieldset/div[1]/div/div[2]')
+
+    if pw_fail.is_displayed():
+        print('failed')
+        raise PasswordFail
+
+    time.sleep(1)  # need this for the below to work
+    if email_fail.is_displayed():
+        print('failed!')
+        raise IdFail
+
+    # -- log in --
     try:
         clickButton(xpath=xpath_login_btn, driver=driver, ntry=5,
                     error_exception=ButtonClickFail, msg='Logging in...', verbose=False)
@@ -208,8 +224,9 @@ def loginBestbuy(url, driver, login_email, login_password):
         time.sleep(2)
         login_fail = driver.find_element(
             by='xpath', value='//*[@id="x-SignIn"]/div/div/div')
-        if login_fail.is_displayed:
+        if login_fail.is_displayed():
             print('failed!')
             raise LoginFail
+
     except NoSuchElementException:
         print('success!')

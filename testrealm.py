@@ -21,7 +21,6 @@ https://medium.com/analytics-vidhya/how-to-easily-bypass-recaptchav2-with-seleni
 '''
 
 # ------ libraries ------
-from logging import debug
 import shutil
 import undetected_chromedriver.v2 as uc
 import argparse
@@ -63,6 +62,7 @@ product_link = 'https://www.bestbuy.ca/en-ca/product/xbox-series-x-1tb-console/1
 product_link = 'https://www.bestbuy.ca/en-ca/product/fitbit-ace-2-kids-activity-tracker-small-grape-only-at-best-buy/13888796?icmp=Recos_3across_tp_sllng_prdcts&referrer=PLP_Reco'
 cart_link = 'https://www.bestbuy.ca/en-ca/basket'
 add_to_cart_xpath = '//*[@id="test"]/button'
+login_link = 'https://www.bestbuy.ca/identity/en-ca/signin?tid=5XvfgvshhDS%252BAUwIKYQLdlGyDnspKQWVP6klxCtzlm9zZddU69rdYiEv8%252BKBsX%252FPQLHeKMT5KnTMJ76PcNFNU3bSKXM6TXzLx2zFglD4Nqsn8LkZFF5msu%252FcdviBbQZgYRdcDUj2A1GopOW%252FUZluebfuKb%252FqTSZHuIoJOC8GL%252BzX57o9Vc7X0rhVS9h6FR%252FUXeMKoLKOP7u0dqJMNJuhqdUKggjaVkjgsyOYA6jfvw3XHgbQzZBQblIoQgGPKq6ARgwdU97%252FHk%252BiOP26yKrxzqozPOCSuhNLgkd1T2k87qEFmhLzgUfuAdmn%252Bzgj1F10'
 checkout_xpath = '//*[@id="root"]/div/div[4]/div[2]/div/section/div/main/section/section[2]/div[3]/div/a'
 # NOTE: remove item button is different per product
 removeitem_xpath = '//*[@id="lineitem-7772b2f1-babf-4eb4-9903-a13590a92060"]/div[3]/div[2]/section[1]/div[2]/div[1]/div[2]/div[3]/div[2]/div/div[1]/button'
@@ -83,26 +83,15 @@ d = uc.Chrome(options=d_options)
 addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d, ntry=5)
 checkOut(cart_url=cart_link, xpath=checkout_xpath, driver=d, ntry=5)
 removeItem()
-
-d.quit()
-
-login_link = 'https://www.bestbuy.ca/identity/en-ca/signin?tid=5XvfgvshhDS%252BAUwIKYQLdlGyDnspKQWVP6klxCtzlm9zZddU69rdYiEv8%252BKBsX%252FPQLHeKMT5KnTMJ76PcNFNU3bSKXM6TXzLx2zFglD4Nqsn8LkZFF5msu%252FcdviBbQZgYRdcDUj2A1GopOW%252FUZluebfuKb%252FqTSZHuIoJOC8GL%252BzX57o9Vc7X0rhVS9h6FR%252FUXeMKoLKOP7u0dqJMNJuhqdUKggjaVkjgsyOYA6jfvw3XHgbQzZBQblIoQgGPKq6ARgwdU97%252FHk%252BiOP26yKrxzqozPOCSuhNLgkd1T2k87qEFmhLzgUfuAdmn%252Bzgj1F10'
-d_options = uc.ChromeOptions()
-customChromeOptions(d_options, headless=False)
-d = uc.Chrome(options=d_options)
-loginBestbuy(url=login_link, driver=d,
-             login_email='jzhangc@gmail.com', login_password='26342531')
 d.quit()
 
 
 # ------ config test ------
-cfg = configparser.ConfigParser()
-cfg.read('./config.ini')
-type(cfg.sections())
-
-
 tst_cfg_dict = configReader('config.ini', verbose=True)
-tst_cfg_dict['cc_code']
+
+d.refresh()
+loginBestbuy(url=login_link, driver=d,
+             login_email=tst_cfg_dict['bestbuy_id'], login_password=tst_cfg_dict['bestbuy_password'])
 
 
 # ------ old ------
