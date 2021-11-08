@@ -169,7 +169,7 @@ def loginBestbuy(url, driver, login_email, login_password):
     xpath_id, xpath_pw, xpath_login_btn = '//*[@id="username"]', '//*[@id="password"]', '//*[@id="signIn"]/div/button'
 
     # -- access website --
-    print(f'Accessing url: {url}...', end='')
+    print(f'Logging in bestbuy...', end='')
     try:
         driver.get(url)
         print('success!\n')
