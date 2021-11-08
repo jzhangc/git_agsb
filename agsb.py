@@ -68,11 +68,11 @@ parser.add_argument('-c', '--config', type=str,
                     default='config.ini',
                     help='str. Config file path. (Default: %(default)s)')
 parser.add_argument('-v', '--version', action='version',
-                    version=f'Veresion: {__VERSION__}')
+                    version=f'Version: {__VERSION__}')
 addBoolArg(parser=parser, name='headless', input_type='flag', default=False,
            help='Run in headless mode. (Default: %(default)s)')
 addBoolArg(parser=parser, name='login_first', input_type='flag', default=True,
-           help='If to log in first. (Default: %(default)s)')
+           help='Log in first. (Default: %(default)s)')
 
 args = parser.parse_args()
 
