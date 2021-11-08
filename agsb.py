@@ -2,7 +2,7 @@
 '''
 Waterbox
     Mandatory
-    [ ] Construct a functional AGSB
+    [ ] Construct core functionalities
     [x] Logging function
     [ ] Multiple supplier support (walmart, bestbuy, microsoft)
     [ ] Send me an email when successful
