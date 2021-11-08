@@ -75,7 +75,7 @@ addBoolArg(parser=parser, name='login_first', input_type='flag', default=True,
 args = parser.parse_args()
 
 
-# ------ variables ------
+# ------ initial variables ------
 headless = args.headless
 product = args.product
 supplier = args.supplier
@@ -134,7 +134,7 @@ if __name__ == '__main__':
     d = uc.Chrome(options=d_options)
 
     # -- log in or not --
-    exception_flag = True
+    login_except_flag = True
     try:
         if supplier == 'bestbuy':
             loginBestbuy(url=login_link, driver=d,
@@ -145,7 +145,7 @@ if __name__ == '__main__':
         # else:
         #     loginWalmart(url=login_link, driver=d,
         #                  login_email=cfg_dict['walmart_id'], login_password=cfg_dict['walmart_password'])
-        exception_flag = False
+        login_except_flag = False
     except PasswordFail:
         error('Incorrect login password.')
     except IdFail:
@@ -153,7 +153,7 @@ if __name__ == '__main__':
     except LoginFail:
         error('Log in failed')
     finally:
-        if exception_flag:  # if any exceptions, exit and do the clean up
+        if login_except_flag:  # if any exceptions, exit and do the clean up
             d.quit()
             print('Cleaning up...', end='')
             try:
