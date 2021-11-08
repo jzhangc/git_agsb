@@ -93,7 +93,6 @@ d.refresh()
 loginBestbuy(url=login_link, driver=d,
              login_email=tst_cfg_dict['bestbuy_id'], login_password=tst_cfg_dict['bestbuy_password'])
 
-
 # ------ old ------
 driver = webdriver.Chrome('./driver/chromedriver')
 

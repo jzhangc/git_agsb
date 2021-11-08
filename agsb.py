@@ -66,7 +66,9 @@ parser.add_argument('-t', '--tries', type=int,
                     help='str. Maximum number of tries. (Default: %(default)s)')
 parser.add_argument('-c', '--config', type=str,
                     default='config.ini',
-                    help='str. Maximum number of tries. (Default: %(default)s)')
+                    help='str. Config file path. (Default: %(default)s)')
+parser.add_argument('-v', '--version', action='version',
+                    version=f'Veresion: {__VERSION__}')
 addBoolArg(parser=parser, name='headless', input_type='flag', default=False,
            help='Run in headless mode. (Default: %(default)s)')
 addBoolArg(parser=parser, name='login_first', input_type='flag', default=True,

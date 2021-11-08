@@ -65,7 +65,7 @@ def configReader(config_file, verbose=False):
     except Exception:
         error(f'Config find found but failed to load.')
 
-    for section in tqdm(cfg.sections()):
+    for section in tqdm(cfg.sections(), desc=f'Load config {config_file}: '):
         for option in cfg.options(section):
             if verbose:
                 print(f'Reading {option} from {section}')
