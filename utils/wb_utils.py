@@ -163,22 +163,25 @@ def fillTextbox(xpath, driver,
             continue
 
 
-def loginBestbuy(url, driver, login_email, login_password):
+def loginBestbuy(url, driver, login_email, login_password, url_verbose=False):
     """add to cart function"""
     # -- variables --
     xpath_id, xpath_pw, xpath_login_btn = '//*[@id="username"]', '//*[@id="password"]', '//*[@id="signIn"]/div/button'
 
     # -- access website --
-    print(f'Logging in bestbuy...', end='')
+    if url_verbose:
+        print(f'Open url {url}...', end='')
     try:
         driver.get(url)
-        print('success!\n')
+        if url_verbose:
+            print('success!\n')
     except:
-        print('failed!\n')
+        if url_verbose:
+            print('failed!\n')
         raise OpenUrlFail
 
     # -- log in bestbuy --
-    print('Logging in...', end='')
+    print('Logging in bestbuy...', end='')
 
     # -- id and pw --
     try:
