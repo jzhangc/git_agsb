@@ -100,7 +100,11 @@ if supplier == 'bestbuy':
         product_link = 'https://www.bestbuy.ca/en-ca/product/playstation-5-digital-edition-console/15689335'
 elif supplier == 'walmart':
     """to be completed"""
+    cart_link = 'https://www.walmart.ca/cart'
+    login_link = 'https://www.walmart.ca/sign-in?from=%2Fen'
     add_to_cart_xpath = '/html/body/div[1]/div/div[4]/div/div/div[1]/div[3]/div[2]/div/div[2]/div[2]/div/button[1]'
+    # enter cart first before checking out
+    checkout_xpath = '/html/body/div[1]/div/div/div[3]/div[4]/div[3]/div/div[1]/div[11]/div/a/button'
     if product == 'xsx':
         product_link = 'https://www.walmart.ca/en/ip/xbox-series-x/6000201786332?cmpid=AF_CA_1709054_1&utm_source=rakuten&utm_medium=affiliate&utm_campaign=always_on&utm_content=10&utm_id=AF_CA_1709054_1&siteID=AKGBlS8SPlM-QK_GLz28of76UQwD5B9gqA&wmlspartner=AKGBlS8SPlM'
     elif product == 'xss':
