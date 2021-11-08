@@ -3,7 +3,7 @@
 Waterbox
     Mandatory
     [ ] Construct a functional AGSB
-    [ ] Logging function
+    [x] Logging function
     [ ] Multiple supplier support (walmart, bestbuy, microsoft)
     [ ] Send me an email when successful
     [ ] Support both guest and logged in methods to purchase
@@ -183,10 +183,6 @@ if __name__ == '__main__':
             print('done!\n')
         except OSError as e:
             print("Error: %s - %s." % (e.filename, e.strerror))
-
-    # main()
-
-    # d.get('https://www.bestbuy.ca/en-ca/product/14964951')
     # if headless:
     #     d.save_screenshot('./screenshots/sc.png')
     # else:
