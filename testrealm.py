@@ -23,16 +23,10 @@ https://medium.com/analytics-vidhya/how-to-easily-bypass-recaptchav2-with-seleni
 # ------ libraries ------
 import shutil
 import undetected_chromedriver.v2 as uc
-import argparse
-import sys
 import time
-import os
-import configparser
 
-from tqdm import tqdm
 from pathlib import Path
 from selenium import webdriver
-from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.remote.errorhandler import NoSuchElementException
 from utils.error_handlers import *
 from utils.app_utils import *
@@ -73,13 +67,36 @@ add_to_cart_xpath = '//*[@id="PageContent"]/section/div/div/div/div/div/div[3]/b
 removeitem_xpath = '//*[@id="store-cart-root"]/div/div/div/section[1]/div/div/div/div[1]/div/div/div[2]/div[1]/div/button[1]'
 cart_link = 'https://www.xbox.com/en-CA/cart'
 
+
+def customChromeOptions2(options, headless=False):
+    # Create empty profile
+    Path('./.temp/chrome_profile').mkdir(parents=True, exist_ok=True)
+    Path('./.temp/chrome_profile/First Run').touch()
+
+    # user agent
+    ua = UserAgent()
+    current_agent = ua.random
+
+    # Set options
+    if headless:
+        # options.headless = True
+        # options.add_argument('--disable-gpu')
+        options.add_argument('--headless')
+        options.add_argument('--window-size=1920,1080')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--start-maximized')
+        options.add_argument('--disable-setuid-sandbox')
+        options.add_argument('--disable-blink-features=AutomationControlled')
+        # options.add_argument('--user-data-dir=./.temp/chrome_profile/')
+        # options.add_argument(f'user-agent={current_agent}')
+
+    options.add_argument('--user-data-dir=./.temp/chrome_profile/')
+    options.add_argument(f'user-agent={current_agent}')
+
+
 d_options = uc.ChromeOptions()
-customChromeOptions(d_options, headless=False)
+customChromeOptions2(d_options, headless=True)
 d = uc.Chrome(options=d_options)
-# d.get(product_link)
-# d.find_element()
-# clickButton(xpath=add_to_cart_xpath, driver=d, ntry=5,
-#             error_exception=AddToCartFail, msg='Adding to cart...')
 addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d, ntry=5)
 checkOut(cart_url=cart_link, xpath=checkout_xpath, driver=d, ntry=5)
 removeItem()
@@ -92,6 +109,86 @@ tst_cfg_dict = configReader('config.ini', verbose=True)
 d.refresh()
 loginBestbuy(url=login_link, driver=d,
              login_email=tst_cfg_dict['bestbuy_id'], login_password=tst_cfg_dict['bestbuy_password'])
+d.save_screenshot('./screenshots/sc.png')
+
+
+url = login_link
+driver = d
+login_email = tst_cfg_dict['bestbuy_id']
+login_password = tst_cfg_dict['bestbuy_password']
+
+
+def loginBestbuy(url, driver, login_email, login_password, url_verbose=False):
+    """add to cart function"""
+    # -- variables --
+    xpath_id, xpath_pw, xpath_login_btn = '//*[@id="username"]', '//*[@id="password"]', '//*[@id="signIn"]/div/button'
+
+    # -- access website --
+    if url_verbose:
+        print(f'Open url {url}...', end='')
+    try:
+        driver.get(url)
+        if url_verbose:
+            print('success!\n')
+    except:
+        if url_verbose:
+            print('failed!\n')
+        raise OpenUrlFail
+
+    # -- log in bestbuy --
+    print('Logging in bestbuy...', end='')
+
+    # -- id and pw --
+    try:
+        fillTextbox(xpath=xpath_id, driver=driver, value=login_email, ntry=5, error_exception=FillInTextFail,
+                    msg='Entering login email...', verbose=False)  # user id
+    except ElementNotFound:
+        error('User email box not found. Program terminated.')
+    except FillInTextFail:
+        error('User email input fail. Program terminated.')
+
+    try:
+        fillTextbox(xpath=xpath_pw, driver=driver, value=login_password, ntry=5, error_exception=FillInTextFail,
+                    msg='Entering login password...', verbose=False)  # pw
+    except ElementNotFound:
+        error('Password box not found. Program terminated.')
+    except FillInTextFail:
+        error('Password input fail. Program terminated.')
+
+    pw_fail = driver.find_element(
+        by='xpath', value='//*[@id="signIn"]/fieldset/div[2]/div/div[2]')
+    email_fail = driver.find_element(
+        by='xpath', value='//*[@id="signIn"]/fieldset/div[1]/div/div[2]')
+
+    if pw_fail.is_displayed():
+        print('failed')
+        raise PasswordFail
+
+    time.sleep(1)  # need this for the below to work
+    if email_fail.is_displayed():
+        print('failed!')
+        raise IdFail
+
+    # -- log in --
+    try:
+        clickButton(xpath=xpath_login_btn, driver=driver, ntry=5,
+                    error_exception=ButtonClickFail, msg='Logging in...', verbose=False)
+    except ElementNotFound:
+        error('Log in button not found. Program terminated.')
+    except ButtonClickFail:
+        error('Clicking log in button fail. Program terminated.')
+
+    try:
+        time.sleep(2)
+        login_fail = driver.find_element(
+            by='xpath', value='//*[@id="x-SignIn"]/div/div/div')
+        if login_fail.is_displayed():
+            print('failed!')
+            raise LoginFail
+
+    except NoSuchElementException:
+        print('success!')
+
 
 # ------ old ------
 driver = webdriver.Chrome('./driver/chromedriver')

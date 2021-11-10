@@ -1,4 +1,4 @@
-'''utilities operating webistes'''
+'''utilities operating websites'''
 
 # ------ libraries ------
 import time
@@ -22,6 +22,7 @@ def customChromeOptions(options, headless=False):
     # Set options
     if headless:
         options.headless = True
+        options.add_argument("--start-maximized")
         # options.add_argument('--user-data-dir=./.temp/chrome_profile/')
         # options.add_argument(f'user-agent={current_agent}')
     else:
