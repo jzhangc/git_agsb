@@ -95,7 +95,7 @@ def customChromeOptions2(options, headless=False):
 
 
 d_options = uc.ChromeOptions()
-customChromeOptions2(d_options, headless=True)
+customChromeOptions(d_options, headless=False)
 d = uc.Chrome(options=d_options)
 addToCart(url=product_link, xpath=add_to_cart_xpath, driver=d, ntry=5)
 checkOut(cart_url=cart_link, xpath=checkout_xpath, driver=d, ntry=5)

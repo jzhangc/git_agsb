@@ -10,7 +10,7 @@ from utils.error_handlers import *
 
 
 # ------ functions --------
-def customChromeOptions(options, headless=False):
+def customChromeOptions2(options, headless=False):
     # Create empty profile
     Path('./.temp/chrome_profile').mkdir(parents=True, exist_ok=True)
     Path('./.temp/chrome_profile/First Run').touch()
@@ -21,13 +21,19 @@ def customChromeOptions(options, headless=False):
 
     # Set options
     if headless:
-        options.headless = True
-        options.add_argument("--start-maximized")
+        # options.headless = True
+        # options.add_argument('--disable-gpu')
+        options.add_argument('--headless')
+        options.add_argument('--window-size=1920,1080')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--start-maximized')
+        options.add_argument('--disable-setuid-sandbox')
+        options.add_argument('--disable-blink-features=AutomationControlled')
         # options.add_argument('--user-data-dir=./.temp/chrome_profile/')
         # options.add_argument(f'user-agent={current_agent}')
-    else:
-        options.add_argument('--user-data-dir=./.temp/chrome_profile/')
-        options.add_argument(f'user-agent={current_agent}')
+
+    options.add_argument('--user-data-dir=./.temp/chrome_profile/')
+    options.add_argument(f'user-agent={current_agent}')
 
 
 def clickButton(xpath, driver, ntry: int, error_exception: Exception, msg: str = 'Clicking button...', verbose=True):
