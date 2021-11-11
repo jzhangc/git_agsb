@@ -10,7 +10,7 @@ from utils.error_handlers import *
 
 
 # ------ functions --------
-def customChromeOptions2(options, headless=False):
+def customChromeOptions(options, headless=False):
     # Create empty profile
     Path('./.temp/chrome_profile').mkdir(parents=True, exist_ok=True)
     Path('./.temp/chrome_profile/First Run').touch()
